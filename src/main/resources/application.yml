@@ -1,0 +1,19 @@
+# spring MariaDB Connect
+spring:
+#  datasource:
+#    url: jdbc:mariadb://101.101.101.101:3306/test
+#    username: test
+#    password: test
+#    driverClassName: org.mariadb.jdbc.Driver
+#    hikari:
+#      connectionTimeout: 10000 #30000ms
+#      maximumPoolSize: 20 #?? 10
+#      validationTimeout: 1000 #5000ms, connectionTimeout ?? ??? ?
+#
+#  jpa:
+#    show-sql: false
+#    hibernate:
+#      ddl-auto: none
+
+server:
+  port: 8888
