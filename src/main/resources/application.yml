@@ -1,10 +1,10 @@
 # spring MariaDB Connect
 spring:
-#  datasource:
-#    url: jdbc:mariadb://101.101.101.101:3306/test
-#    username: test
-#    password: test
-#    driverClassName: org.mariadb.jdbc.Driver
+  datasource:
+    url: jdbc:mariadb://bucwith.cpominkx6ixa.ap-northeast-2.rds.amazonaws.com:3306/bucwith
+    username: root
+    password: BUCWITH123
+    driverClassName: org.mariadb.jdbc.Driver
 #    hikari:
 #      connectionTimeout: 10000 #30000ms
 #      maximumPoolSize: 20 #?? 10
