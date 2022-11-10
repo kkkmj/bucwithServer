@@ -3,7 +3,7 @@ package com.bucwith.common.interceptor;
 
 import com.bucwith.common.log.APILog;
 import com.bucwith.common.log.ERRLog;
-import com.bucwith.dto.ResponseDTO;
+import com.bucwith.dto.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,7 +20,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
     // Success Return은 postHandle에서 Log 처리
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView mv) throws Exception {
-        ResponseDTO responseDTO = getResponseBody(response);
+        ResponseDto responseDTO = getResponseBody(response);
         if (responseDTO.getCode() == 200)
             if (request.getMethod().equals(POST)) {
                 log.info("{} || Result : code = {} msg = {} \n Parameter : {} ", request.getRequestURI(), responseDTO.getCode(), responseDTO.getCodeMsg(), request.getAttribute("requestBody"));
@@ -30,7 +30,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
     // Error Return은 afterCompletion Log 처리
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        ResponseDTO responseDTO = getResponseBody(response);
+        ResponseDto responseDTO = getResponseBody(response);
         // Exception이 발생하면 postHandle을 타지 않는다.
         if (responseDTO.getCode() != 200)
             if (request.getMethod().equals(POST)) {
@@ -40,10 +40,10 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
 
-    private ResponseDTO getResponseBody(HttpServletResponse response) throws IOException {
+    private ResponseDto getResponseBody(HttpServletResponse response) throws IOException {
         ContentCachingResponseWrapper responseWrapper = getResponseWrapper(response);
         ObjectMapper om = new ObjectMapper();
-        return om.readValue(responseWrapper.getContentAsByteArray(), ResponseDTO.class);
+        return om.readValue(responseWrapper.getContentAsByteArray(), ResponseDto.class);
     }
 
     private ContentCachingResponseWrapper getResponseWrapper(HttpServletResponse response) {
