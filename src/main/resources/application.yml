@@ -3,8 +3,10 @@ spring:
   datasource:
     url: jdbc:mariadb://bucwith.cpominkx6ixa.ap-northeast-2.rds.amazonaws.com:3306/bucwith
     username: root
-    password: BUCWITH123
+    #password: https://www.notion.so/DB-8516c2ab68b9464ea5e911ec1e2b9e96 참고
     driverClassName: org.mariadb.jdbc.Driver
+  profiles:
+    include: oauth
 #    hikari:
 #      connectionTimeout: 10000 #30000ms
 #      maximumPoolSize: 20 #?? 10
@@ -14,6 +16,10 @@ spring:
 #    show-sql: false
 #    hibernate:
 #      ddl-auto: none
+
+security:
+  basic:
+    enabled: true
 
 server:
   port: 8888

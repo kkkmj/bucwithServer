@@ -1,0 +1,10 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 393567589007-3achadgo08t7hlnv87q6r38t2toicbot.apps.googleusercontent.com
+            #client-secret: https://www.notion.so/OAuth-d98bc25a8a0e43cda0880ce2368fd54d 참고
+            redirect-uri: http://localhost:8888/login/oauth2/code/google
+            scope: profile, email
