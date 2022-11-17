@@ -4,7 +4,7 @@ import com.bucwith.common.code.ApiCode;
 import com.bucwith.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
 
-public class CommController {
+public class CommController  {
 
     public ResponseEntity SuccessReturn(Object data) {
         return ResponseEntity.ok().body(

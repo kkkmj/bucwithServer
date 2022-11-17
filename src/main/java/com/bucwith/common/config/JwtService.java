@@ -1,0 +1,151 @@
+package com.bucwith.common.config;
+
+import antlr.Token;
+import com.bucwith.common.config.oauth.dto.OAuthToken;
+import com.bucwith.common.exception.BaseException;
+import com.bucwith.domain.account.Role;
+import com.bucwith.domain.account.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
+
+import static com.bucwith.common.code.ApiCode.EMPTY_JWT;
+import static com.bucwith.common.code.ApiCode.INVALID_JWT;
+import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
+
+
+/**
+ * JWT 토큰 서비스
+ *
+ * jwt토큰 생성, 얻기, 인증, 검증, 토큰에서 userId 추출
+ *
+ */
+@Service
+public class JwtService {
+
+    private static final String AUTHORITIES_KEY = "role";
+
+    /**
+        JWT 생성
+        @param email, role
+        @return String
+         **/
+    public OAuthToken createJwt(String email, Role role){
+        Date now = new Date();
+        return new OAuthToken(
+                Jwts.builder()
+                .setHeaderParam("type","jwt")
+                .claim("email",email)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact(),
+        Jwts.builder()
+                .setHeaderParam("type","jwt")
+                .claim("email",email)
+                .claim("role", role)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
+                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                .compact());
+    }
+
+    /**
+    Header에서 X-ACCESS-TOKEN 으로 JWT 추출
+    @return String
+     **/
+    public String getJwt(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader("X-ACCESS-TOKEN");
+    }
+
+
+    /**
+     * 토큰 인증
+     * User는 SpringSecurity UserDetails의 User
+     *
+     * 유저 인증토큰에 필요한 것들(Security유저객체, 토큰, 인증) 을 리턴
+     * @param token
+     * @return
+     */
+    public Authentication getAuthentication(String token){
+        Jws<Claims> claims;
+
+            claims = Jwts.parser()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .parseClaimsJws(token);
+
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.getBody().get(AUTHORITIES_KEY).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        // 디비를 거치지 않고 토큰에서 값을 꺼내 바로 시큐리티 유저 객체를 만들어 Authentication을 만들어 반환하기에 유저네임, 권한 외 정보는 알 수 없다.
+        User principal = new User(claims.getBody().getSubject(), "", authorities);
+
+        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+
+    /**
+     * jwt 검증
+     *
+     * jwt의 기한이 다 되었는지 검증
+     * @param jwtToken
+     * @return
+     */
+    public boolean validateToken(String jwtToken) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+    JWT에서 userIdx 추출
+    @return int
+    @throws BaseException
+     */
+    public String getEmail() throws BaseException{
+        //1. JWT 추출
+        String accessToken = getJwt();
+        if(accessToken == null || accessToken.length() == 0){
+            throw new BaseException(EMPTY_JWT);
+        }
+
+        // 2. JWT parsing
+        Jws<Claims> claims;
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        // 3. userId 추출
+        return claims.getBody().get("email",String.class);  // jwt 에서 userIdx를 추출합니다.
+    }
+
+}
+
