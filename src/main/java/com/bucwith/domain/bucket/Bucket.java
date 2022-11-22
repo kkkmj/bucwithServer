@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Data
@@ -16,7 +15,11 @@ import javax.persistence.Id;
 @AllArgsConstructor
 public class Bucket {
     @Id
-    private int bucketId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer bucketId;
     private String contents;
-    private int userId;
+    private Integer userId;
+
+    @Enumerated(EnumType.STRING)
+    private BucketType type;
 }
