@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class BucketReqDto {
-    @NotNull private Integer userId;
+public class BucketModifyReqDto {
+    @NotNull private Integer bucketId;
     @NotBlank private String contents;
     @NotNull private BucketType type;
 }
