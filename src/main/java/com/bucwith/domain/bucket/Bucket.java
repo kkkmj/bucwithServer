@@ -19,8 +19,9 @@ public class Bucket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bucketId;
-    private String contents;
     private Integer userId;
+    private String contents;
+    private Boolean isFinished;
 
     @Enumerated(EnumType.STRING)
     private BucketType type;
