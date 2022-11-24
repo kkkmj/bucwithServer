@@ -73,4 +73,18 @@ public class BucketController extends CommController {
         bucketService.remove(bucketId);
         return SuccessReturn();
     }
+
+    /*
+     * Bucket 완료 True Or False 등록
+     * Request Data : bucketId
+     * Response Data : 수정된 Bucket 반환
+     */
+    @PostMapping("/finish/{bucketId}")
+    public ResponseEntity setFinished(@PathVariable Integer bucketId) {
+
+        Bucket bucket = bucketService.getBucketByBucketId(bucketId);
+        bucket.setIsFinished(!bucket.getIsFinished());
+
+        return SuccessReturn(bucketService.register(bucket));
+    }
 }
