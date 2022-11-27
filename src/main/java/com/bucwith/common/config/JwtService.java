@@ -1,26 +1,24 @@
 package com.bucwith.common.config;
 
-import antlr.Token;
 import com.bucwith.common.config.oauth.dto.OAuthToken;
+import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
-import com.bucwith.domain.account.Role;
-import com.bucwith.domain.account.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -44,25 +42,25 @@ public class JwtService {
 
     /**
         JWT 생성
-        @param email, role
+        @param userId, role
         @return String
          **/
-    public OAuthToken createJwt(String email, Role role){
-        Date now = new Date();
+    public OAuthToken createJwt(Long userId, String name){
+        //LocalDateTime now = new org.joda.time.LocalDateTime();
         return new OAuthToken(
                 Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("email",email)
-                .claim("role", role)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))
+                .claim("userId",userId)
+                .claim("name", name)
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact(),
         Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("email",email)
-                .claim("role", role)
-                .setIssuedAt(now)
+                .claim("userId",userId)
+                .claim("name", name)
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact());
@@ -122,11 +120,11 @@ public class JwtService {
     }
 
     /**
-    JWT에서 userIdx 추출
+    JWT에서 userId 추출
     @return int
     @throws BaseException
      */
-    public String getEmail() throws BaseException{
+    public Long getUserId() throws BaseException{
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
@@ -137,15 +135,16 @@ public class JwtService {
         Jws<Claims> claims;
         try{
             claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET_KEY)
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
         } catch (Exception ignored) {
             throw new BaseException(INVALID_JWT);
         }
 
-        // 3. userId 추출
-        return claims.getBody().get("email",String.class);  // jwt 에서 userIdx를 추출합니다.
+        // 3. userIdx 추출
+        return claims.getBody().get("userId",Long.class);  // jwt 에서 userId를 추출합니다.
     }
+
 
 }
 
