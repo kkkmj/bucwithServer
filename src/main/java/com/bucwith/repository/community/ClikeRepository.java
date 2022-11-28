@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface ClikeRepository extends JpaRepository<Clike, Long> {
     Optional<Clike> findByCommunityAndUser(Community community, User user);
 
+    Boolean existsByCommunityAndUser(Community community, User user);
+
     @Query("SELECT COUNT(l) FROM Clike l WHERE l.community.commuId = :commuId")
     Long CountByCommunity(@Param("commuId") Long commuId);
 

@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,23 +33,19 @@ public class CommunityService {
     private final ClikeRepository clikeRepository;
     private final CommuCateRepository commuCateRepository;
 
-    /**게시글 저장**/
     //@Transactional
     public Long commuSave(CommuSaveReqDto reqDto){
         User user  = userRepository.findById(reqDto.getUser().getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + reqDto.getUser().getUserId()));
 
-        /**게시글 저장**/
         Long commuId = communityRepository.save(reqDto.toEntity()).getCommuId();
 
         if(!CollectionUtils.isEmpty(reqDto.getCategory())){
-            /**카테고리 저장**/
             SaveCategory(commuId, reqDto.getCategory());
         }
         return commuId;
     }
 
-    /**카테고리 저장**/
     public void SaveCategory(Long commuId,List<Category> categoryList){
         Community entity  = communityRepository.findById(commuId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + commuId));
@@ -63,92 +60,79 @@ public class CommunityService {
         }
     }
 
-    /**게시글 조회**/
     @Transactional(readOnly = true)
-    public CommuResDto findCommuById(Long commuId){
-        /**글 불러오기**/
+    public CommuResDto findCommuById(Long userId, Long commuId){
         Community entity  = communityRepository.findById(commuId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + commuId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + commuId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + userId));
 
-        /**카테고리 불러오기**/
-        List<CommuCate> categorys = commuCateRepository.findByCommunity(entity);
-        List<Category> categoryList = new ArrayList<>();
-        for (CommuCate commuCate: categorys){
-            categoryList.add(commuCate.getCategory());
-        }
-
-        /**좋아요 개수**/
+        List<Category> categoryList = commuCateRepository.findByCommunity(entity).stream().map(CommuCate::getCategory).collect(Collectors.toList());
         Long LikeCnt = clikeRepository.CountByCommunity(entity.getCommuId());
+        Long CommentCnt = commentRepository.CountByCommunity(entity.getCommuId());
+        Boolean isLike = clikeRepository.existsByCommunityAndUser(entity, user);
 
-        /**댓글 개수**/
-        Long CommCnt = commentRepository.CountByCommunity(entity.getCommuId());
 
-        return new CommuResDto(entity, categoryList, LikeCnt, CommCnt);
+        return new CommuResDto(entity, categoryList, LikeCnt, CommentCnt, isLike );
     }
 
-    /**전체 글 조회**/
     @Transactional(readOnly = true)
-    public List<CommuResDto> findCommuAllDesc(){
-        /**커뮤니티 리스트 전체 조회**/
+    public List<CommuResDto> findCommuAllDesc(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + userId));
         List<Community> communities = communityRepository.findAllDesc();
-
-
         List<CommuResDto> commuList = new ArrayList<>();
 
         for (Community community : communities){
-            /**좋아요 개수**/
             Long likeCnt = clikeRepository.CountByCommunity(community.getCommuId());
-            /**댓글 개수**/
-            Long commCnt = commentRepository.CountByCommunity(community.getCommuId());
-            /**커뮤니티 카테고리 배열 생성**/
-            List<CommuCate> categorys = commuCateRepository.findByCommunity(community);
-            List<Category> categoryList = new ArrayList<>();
-            for (CommuCate commuCate: categorys){
-                categoryList.add(commuCate.getCategory());
-            }
-            /**보여줄 커뮤니티 객체 생성**/
-            CommuResDto resDto = new CommuResDto(community, categoryList, likeCnt, commCnt);
+            Long commentCnt = commentRepository.CountByCommunity(community.getCommuId());
+            List<Category> categoryList = commuCateRepository.findByCommunity(community).stream().map(CommuCate::getCategory).collect(Collectors.toList());
+            Boolean isLike = clikeRepository.existsByCommunityAndUser(community, user);
+
+            CommuResDto resDto = new CommuResDto(community, categoryList, likeCnt, commentCnt, isLike);
             commuList.add(resDto);
         }
 
         return commuList;
     }
 
-    /**댓글 저장**/
     @Transactional
-    public Long commentSave(CommentSaveReqDto reqDto){
+    public Long modifyCommu(Long commuId, CommuModifyReqDto reqDto){
+        Community community = communityRepository.findById(commuId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + commuId));
+        community.modify(reqDto.getContent(), reqDto.getType(), reqDto.getParty());
 
-        Long commentId = commentRepository.save(reqDto.toEntity()).getComId();
+        List<Category> categoryList = commuCateRepository.findByCommunity(community).stream().map(CommuCate::getCategory).collect(Collectors.toList());
+        if(!Objects.equals(categoryList, reqDto.getCategory())){
+            commuCateRepository.deleteAllInBatch(community.getCommuCates());
+            SaveCategory(commuId, reqDto.getCategory());
+        }
 
-        return commentId;
+        return commuId;
     }
 
-    /**댓글 조회**/
-    @Transactional(readOnly = true)
-    public List<CommentResDto> findCommentAllDesc(Long commuId){
-        return commentRepository.findAllDesc().stream()
-                .map(CommentResDto::new)
-                .collect(Collectors.toList());
+    @Transactional
+    public void deleteCommu(Long commuId){
+        Community community = communityRepository.findById(commuId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + commuId));
+        communityRepository.delete(community);
     }
 
-    /**좋아요**/
+
+
     @Transactional
     public void commuLike(Long commuId, Long userId){
-        /**커뮤니티, 작성자 확인**/
         Community community = communityRepository.findById(commuId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 글이 없습니다. id=" + commuId));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + userId));
 
-        /**좋아요 여부 확인**/
         Optional<Clike> isLike = clikeRepository.findByCommunityAndUser(community, user);
 
         isLike.ifPresentOrElse(
-                /**좋아요가 있다면 좋아요 삭제**/
                 clike -> {
                     clikeRepository.delete(clike);
                 },
-                /**좋아요가 저장안되었다면 좋아요 등록**/
                 () -> {
                     Clike like = Clike.builder()
                             .community(community)

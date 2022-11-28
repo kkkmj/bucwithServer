@@ -32,6 +32,9 @@ public class Community {
 
     private int party;
 
+    private int likeCnt;
+    private int commentCnt;
+
     @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     @OrderBy("comId asc")
     private List<Comment> comments = new ArrayList<Comment>();
@@ -40,10 +43,21 @@ public class Community {
     @OrderBy("likeId asc")
     private List<Clike> likes = new ArrayList<Clike>();
 
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
+    @OrderBy("ccId asc")
+    private List<CommuCate> commuCates = new ArrayList<CommuCate>();
+
+
 
     @Builder
     public Community(User user, String content, CommuType type, int party) {
         this.user = user;
+        this.content = content;
+        this.type = type;
+        this.party = party;
+    }
+
+    public void modify(String content, CommuType type, int party){
         this.content = content;
         this.type = type;
         this.party = party;
