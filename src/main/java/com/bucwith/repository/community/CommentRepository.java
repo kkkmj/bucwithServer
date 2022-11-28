@@ -12,8 +12,14 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("SELECT c FROM Comment c ORDER BY c.comId DESC")
-    List<Comment> findAllDesc();
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.replyId IS NULL ORDER BY c.comId ASC")
+    List<Comment> findCommentDesc(@Param("commuId") Long commuId);
+
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.replyId = :replyId ORDER BY c.comId ASC")
+    List<Comment> findReplyDesc(@Param("commuId") Long commuId, @Param("replyId") Long replyId);
+
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId ORDER BY c.comId ASC")
+    List<Comment> findAllDesc(@Param("commuId") Long commuId);
 
     @Query("SELECT COUNT( c ) FROM Comment c WHERE c.community.commuId = :commuId")
     Long CountByCommunity(@Param("commuId") Long commuId);

@@ -13,14 +13,14 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CommentSaveReqDto {
     private Community community;
-    private int replyId;
+    private Long replyId;
     private User user;
     @NotBlank(message = "내용을 입력해주세요")
     private String content;
     private Boolean secret;
 
     @Builder
-    public CommentSaveReqDto(Community community, int replyId, User user, String content, Boolean secret){
+    public CommentSaveReqDto(Community community, Long replyId, User user, String content, Boolean secret){
         this.community = community;
         this.replyId = replyId;
         this.user = user;
