@@ -25,6 +25,13 @@ public class ExceptionController extends CommController {
         return ErrorReturn(ApiCode.UNKNOWN_ERROR);
     }
 
+    // Repository 조회 실패시 에러 체크
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity illegalArgumentException(Exception e) {
+        e.printStackTrace();
+        return ErrorReturn(ApiCode.UNKNOWN_ERROR.getCode(),e.getMessage());
+    }
+
     // @RequestParam Param Error Check
     @ExceptionHandler({MissingServletRequestParameterException.class})
     public ResponseEntity missingServletRequestParameterException(MissingServletRequestParameterException e) {
