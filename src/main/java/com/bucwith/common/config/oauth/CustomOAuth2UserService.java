@@ -1,9 +1,10 @@
 package com.bucwith.common.config.oauth;
 
 import com.bucwith.common.config.JwtService;
+import com.bucwith.common.config.oauth.dto.CustomUserDetail;
 import com.bucwith.common.config.oauth.dto.OAuthAttributes;
 import com.bucwith.domain.account.User;
-import com.bucwith.domain.account.UserRepository;
+import com.bucwith.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,13 +28,15 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final HttpSession httpSession;
+
+
 
 
     /**
      * OAuth2UserRequest로 들어온 userRequest값들을 db에 저장
      *
+     * userRequest에는 access token 정보들이 들어있음
+     * access token을 이용해 서드파티 서버로부터 사용자 정보를 받아옴
      * @param userRequest the user request
      * @return
      * @throws OAuth2AuthenticationException
@@ -63,10 +66,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         User user = saveOrUpdate(attributes);
 
-        return new DefaultOAuth2User(
+        return CustomUserDetail.create(user, oAuth2User.getAttributes());
+/*        return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
                 attributes.getAttributes(),
-                attributes.getNameAttributeKey());
+                attributes.getNameAttributeKey());*/
     }
 
 
@@ -79,7 +83,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      */
     private User saveOrUpdate(OAuthAttributes attributes) {
         User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName()))
                 .orElse(attributes.toEntity());
 
         return userRepository.save(user);
