@@ -5,6 +5,22 @@ spring:
         registration:
           google:
             client-id: 393567589007-3achadgo08t7hlnv87q6r38t2toicbot.apps.googleusercontent.com
-            #client-secret: https://www.notion.so/OAuth-d98bc25a8a0e43cda0880ce2368fd54d 참고
+            #client-secret: 구글 어차피 안쓰니 지워도 상관은..
             redirect-uri: http://localhost:8888/login/oauth2/code/google
             scope: profile, email
+          kakao:
+            client-id: eccc1040c574c780c7771014ebb77263
+            #client-secret: 노션참고
+            redirect-uri: http://localhost:8888/login/oauth2/code/kakao
+            authorization-grant-type: authorization_code
+            scope:
+              - profile_nickname
+              - account_email
+            client-name: Kakao
+            client-authentication-method: POST
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id

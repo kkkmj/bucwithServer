@@ -1,26 +1,25 @@
 package com.bucwith.common.config;
 
-import antlr.Token;
-import com.bucwith.common.config.oauth.dto.OAuthToken;
+import com.bucwith.common.config.oauth.CustomUserDetailService;
+import com.bucwith.common.config.oauth.dto.CustomUserDetail;
+import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
-import com.bucwith.domain.account.Role;
-import com.bucwith.domain.account.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -39,33 +38,27 @@ import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
  */
 @Service
 public class JwtService {
+    private final CustomUserDetailService userDetailService;
 
     private static final String AUTHORITIES_KEY = "role";
 
+    public JwtService(CustomUserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
+    }
+
     /**
         JWT 생성
-        @param email, role
+        @param userId, role
         @return String
          **/
-    public OAuthToken createJwt(String email, Role role){
-        Date now = new Date();
-        return new OAuthToken(
-                Jwts.builder()
+    public String createJwt(Long userId){
+        return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("email",email)
-                .claim("role", role)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))
+                .claim("userId",userId)
+                .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-                .compact(),
-        Jwts.builder()
-                .setHeaderParam("type","jwt")
-                .claim("email",email)
-                .claim("role", role)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-                .compact());
+                .compact();
     }
 
     /**
@@ -74,7 +67,7 @@ public class JwtService {
      **/
     public String getJwt(){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return request.getHeader("X-ACCESS-TOKEN");
+        return request.getHeader("Authorization");
     }
 
 
@@ -87,21 +80,11 @@ public class JwtService {
      * @return
      */
     public Authentication getAuthentication(String token){
-        Jws<Claims> claims;
-
-            claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET_KEY)
-                    .parseClaimsJws(token);
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.getBody().get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
         // 디비를 거치지 않고 토큰에서 값을 꺼내 바로 시큐리티 유저 객체를 만들어 Authentication을 만들어 반환하기에 유저네임, 권한 외 정보는 알 수 없다.
-        User principal = new User(claims.getBody().getSubject(), "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        CustomUserDetail userDetail = userDetailService.loadUserById(this.getUserId(token));
+
+        return new UsernamePasswordAuthenticationToken(userDetail, token, userDetail.getAuthorities());
     }
 
 
@@ -122,11 +105,11 @@ public class JwtService {
     }
 
     /**
-    JWT에서 userIdx 추출
+    JWT에서 userId 추출
     @return int
     @throws BaseException
      */
-    public String getEmail() throws BaseException{
+    public Long getUserId() throws BaseException{
         //1. JWT 추출
         String accessToken = getJwt();
         if(accessToken == null || accessToken.length() == 0){
@@ -137,15 +120,20 @@ public class JwtService {
         Jws<Claims> claims;
         try{
             claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET_KEY)
+                    .setSigningKey(Secret.JWT_SECRET_KEY)
                     .parseClaimsJws(accessToken);
         } catch (Exception ignored) {
             throw new BaseException(INVALID_JWT);
         }
 
-        // 3. userId 추출
-        return claims.getBody().get("email",String.class);  // jwt 에서 userIdx를 추출합니다.
+        // 3. userIdx 추출
+        return claims.getBody().get("userId", Long.class);  // jwt 에서 userId를 추출합니다.
     }
+    public Long getUserId(String token){
+        return Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(token).getBody().get("userId", Long.class);
+    }
+
 
 }
 

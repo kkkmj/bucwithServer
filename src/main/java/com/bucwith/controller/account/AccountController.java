@@ -34,10 +34,11 @@ public class AccountController extends CommController {
      * @throws BaseException
      */
     @PutMapping("/name")
-    public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto) throws BaseException {
-        String email = jwtService.getEmail();
-        userService.update(email, reqDto);
-        return SuccessReturn();
+    public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) throws BaseException {
+        Long userId = jwtService.getUserId();
+        userService.update(userId, reqDto);
+        return SuccessReturn(reqDto);
+
     }
 
 }
