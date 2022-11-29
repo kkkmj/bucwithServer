@@ -35,4 +35,5 @@ public class CommController  {
         return ResponseEntity.ok().body(
                 ResponseDto.builder().code(code).codeMsg(msg).data(data).build());
     }
+    
 }
