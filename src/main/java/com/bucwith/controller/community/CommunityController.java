@@ -1,10 +1,10 @@
-package com.bucwith.controller.Community;
+package com.bucwith.controller.community;
 
 import com.bucwith.common.CommController;
 import com.bucwith.common.config.JwtService;
 import com.bucwith.common.exception.BaseException;
 import com.bucwith.dto.community.*;
-import com.bucwith.service.Community.CommunityService;
+import com.bucwith.service.community.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -53,16 +53,73 @@ public class CommunityController extends CommController {
         return SuccessReturn(resDto);
     }
 
+    /**
+     * 게시글 수정
+     * @param commuId
+     * @param reqDto
+     * @return 수정id
+     */
     @PutMapping("/{commuId}")
     public ResponseEntity modifyCommu(@PathVariable Long commuId, @Validated @RequestBody CommuModifyReqDto reqDto) {
         Long modifyId = communityService.modifyCommu(commuId, reqDto);
         return SuccessReturn(modifyId);
     }
 
+    /**
+     * 커뮤니티 삭제
+     * @param commuId
+     * @return 삭제된 id
+     */
     @DeleteMapping("/{commuId}")
     public ResponseEntity deleteCommu(@PathVariable Long commuId){
         communityService.deleteCommu(commuId);
         return SuccessReturn(commuId);
+    }
+
+    /**
+     * 댓글 등록!
+     * @param commuId
+     * @param reqDto (글번호, 댓글번호, 유저번호, 내용, 비밀여부)
+     * @return 작성된 댓글 id
+     */
+    @PostMapping("/{commuId}/comment")
+    public ResponseEntity commentSave(@PathVariable Long commuId, @Validated @RequestBody CommentSaveReqDto reqDto) throws BaseException {
+        Long commentId = communityService.commentSave(reqDto);
+        return SuccessReturn(commentId);
+    }
+
+    /**
+     * 댓글 조회 리스트!
+     * @param commuId
+     * @return (댓글 번호, 글번호, 댓글 번호, 유저이름, 내용, 비밀여부, 등록날짜)
+     */
+    @GetMapping("/{commuId}/comment")
+    public ResponseEntity findCommentAll(@PathVariable Long commuId){
+        List<CommentAllResDto> comment = communityService.findCommentAllDesc(commuId);
+        return SuccessReturn(comment);
+    }
+
+    /**
+     * 댓글 수정
+     * @param commentId
+     * @param reqDto
+     * @return 수정 댓글id
+     */
+    @PutMapping("/comment/{commentId}")
+    public ResponseEntity modifyComment(@PathVariable Long commentId, @Validated @RequestBody CommentModifyReqDto reqDto) {
+        Long modifyId = communityService.modifyComment(commentId, reqDto);
+        return SuccessReturn(modifyId);
+    }
+
+    /**
+     * 댓글 삭제
+     * @param commentId
+     * @return 삭제된 댓글 id
+     */
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable Long commentId){
+        communityService.deleteComment(commentId);
+        return SuccessReturn(commentId);
     }
 
 
@@ -76,7 +133,6 @@ public class CommunityController extends CommController {
     @PostMapping("/{commuId}/like")
     public ResponseEntity commuLike(@PathVariable Long commuId) throws BaseException {
         Long userId=jwtService.getUserId();
-        //Long userId = 4L;
         communityService.commuLike(commuId,userId);
         return SuccessReturn();
     }

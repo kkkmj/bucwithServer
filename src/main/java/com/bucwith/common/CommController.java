@@ -25,4 +25,6 @@ public class CommController  {
         return ResponseEntity.ok().body(
                 ResponseDto.builder().code(apiCode.getCode()).codeMsg(apiCode.getMsg()).data(data).build());
     }
+
+
 }
