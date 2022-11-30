@@ -1,11 +1,8 @@
-package com.bucwith.service.Community;
+package com.bucwith.service.community;
 
 import com.bucwith.domain.account.User;
+import com.bucwith.domain.community.*;
 import com.bucwith.repository.user.UserRepository;
-import com.bucwith.domain.community.Category;
-import com.bucwith.domain.community.CommuCate;
-import com.bucwith.domain.community.Community;
-import com.bucwith.domain.community.Clike;
 import com.bucwith.dto.community.*;
 import com.bucwith.repository.community.CommentRepository;
 import com.bucwith.repository.community.CommuCateRepository;
@@ -116,6 +113,46 @@ public class CommunityService {
         Community community = communityRepository.findById(commuId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + commuId));
         communityRepository.delete(community);
+    }
+
+    @Transactional
+    public Long commentSave(CommentSaveReqDto reqDto){
+        Long commentId = commentRepository.save(reqDto.toEntity()).getComId();
+
+        return commentId;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentAllResDto> findCommentAllDesc(Long commuId){
+        List<Comment> comments = commentRepository.findCommentDesc(commuId);
+
+        List<CommentAllResDto> commentAll = new ArrayList<>();
+
+        for (Comment comment : comments){
+            List<CommentResDto> commentResDtos = commentRepository.findReplyDesc(commuId, comment.getComId()).stream()
+                    .map(CommentResDto::new)
+                    .collect(Collectors.toList());
+            CommentAllResDto resDto = new CommentAllResDto(comment, commentResDtos);
+            commentAll.add(resDto);
+        }
+
+        return commentAll;
+    }
+
+    @Transactional
+    public Long modifyComment(Long commentId, CommentModifyReqDto reqDto){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
+        comment.modify(reqDto.getContent(), reqDto.getSecret());
+
+        return commentId;
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. id=" + commentId));
+        commentRepository.delete(comment);
     }
 
 
