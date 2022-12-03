@@ -33,6 +33,7 @@ public class BucketController extends CommController {
                 .userId(reqDto.getUserId())
                 .contents(reqDto.getContents())
                 .type(reqDto.getType())
+                .isFinished(false)
                 .build()
         );
 
@@ -56,7 +57,7 @@ public class BucketController extends CommController {
      */
     @PutMapping
     public ResponseEntity modify(@Validated @RequestBody BucketModifyReqDto reqDto) {
-        Bucket bucket = bucketService.getBucketByBucketId(reqDto.getBucketId());
+        Bucket bucket = bucketService.getBucketById(reqDto.getBucketId());
         bucket.setContents(reqDto.getContents());
         bucket.setType(reqDto.getType());
 
@@ -82,7 +83,7 @@ public class BucketController extends CommController {
     @PostMapping("/finish/{bucketId}")
     public ResponseEntity setFinished(@PathVariable Integer bucketId) {
 
-        Bucket bucket = bucketService.getBucketByBucketId(bucketId);
+        Bucket bucket = bucketService.getBucketById(bucketId);
         bucket.setIsFinished(!bucket.getIsFinished());
 
         return SuccessReturn(bucketService.register(bucket));

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import java.util.List;
+
 
 @Slf4j
 @Service
@@ -23,8 +25,8 @@ public class BucketService {
         return bucketRepository.save(bucket);
     }
 
-    public Bucket getBucketByBucketId(int bucketId){
-        return bucketRepository.findByBucketId(bucketId)
+    public Bucket getBucketById(int bucketId){
+        return bucketRepository.findById(bucketId)
                 .orElseThrow(() -> new NullPointerException("NOT FOUND BUCKET"));
     }
 
