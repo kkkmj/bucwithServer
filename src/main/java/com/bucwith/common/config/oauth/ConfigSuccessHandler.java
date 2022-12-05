@@ -2,6 +2,7 @@ package com.bucwith.common.config.oauth;
 
 import com.bucwith.common.config.JwtService;
 import com.bucwith.common.config.oauth.dto.CustomUserDetail;
+import com.bucwith.dto.user.UserResponseDto;
 import com.bucwith.repository.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,6 @@ import java.io.IOException;
 public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtService jwtService;
     private final ObjectMapper objectMapper;
-    private final UserRepository userRepository;
 
     /**
      * success handler
@@ -42,8 +42,9 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtService.createJwt(userId);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
+
         /* 로그인 뒤 redirect처리*/
-        targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
+        targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/me/list")
                 .queryParam("token", token)
                 .build().toUriString();
         if (response.isCommitted()) {
@@ -53,11 +54,13 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setContentType("application/json;charset=UTF-8");
 
         response.addHeader("Authorization", token);
-        String result = objectMapper.writeValueAsString( userRepository.findByEmail(user.getEmail()) );
-        response.getWriter().write(result);
+        String result = objectMapper.writeValueAsString(new UserResponseDto(user));
 
+        response.getWriter().write(result);
         //getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+
+
 
 
 }

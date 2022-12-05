@@ -17,12 +17,22 @@ public class CustomUserDetail implements UserDetails, OAuth2User {
 
     private Long userId;
     private String email;
+    private String uname;
+    private Boolean isSign;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public CustomUserDetail(Long userId, String email, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetail(Long userId, String email, String uname, Collection<? extends GrantedAuthority> authorities) {
         this.userId = userId;
         this.email = email;
+        this.uname = uname;
+        this.authorities = authorities;
+    }
+    public CustomUserDetail(Long userId, String email, String uname, Boolean isSign,Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
+        this.email = email;
+        this.uname = uname;
+        this.isSign = isSign;
         this.authorities = authorities;
     }
 
@@ -33,12 +43,14 @@ public class CustomUserDetail implements UserDetails, OAuth2User {
         return new CustomUserDetail(
                 user.getUserId(),
                 user.getEmail(),
+                user.getName(),
                 authorities
         );
     }
-    public static CustomUserDetail create(User user, Map<String, Object> attributes) {
+    public static CustomUserDetail create(User user, Map<String, Object> attributes, Boolean isSign) {
         CustomUserDetail userDetails = CustomUserDetail.create(user);
         userDetails.setAttributes(attributes);
+        userDetails.setIsSign(isSign);
         return userDetails;
     }
     @Override
@@ -88,4 +100,8 @@ public class CustomUserDetail implements UserDetails, OAuth2User {
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
+    public void setIsSign(Boolean isSign){
+        this.isSign = isSign;
+    }
+    public Boolean getIsSign(){return isSign;}
 }

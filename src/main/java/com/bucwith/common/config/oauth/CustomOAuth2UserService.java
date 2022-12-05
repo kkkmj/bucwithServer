@@ -4,6 +4,7 @@ import com.bucwith.common.config.JwtService;
 import com.bucwith.common.config.oauth.dto.CustomUserDetail;
 import com.bucwith.common.config.oauth.dto.OAuthAttributes;
 import com.bucwith.domain.account.User;
+import com.bucwith.domain.community.Clike;
 import com.bucwith.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.Optional;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * OAuth Login을 통해 들어온 값들을 처리
@@ -63,10 +68,22 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         log.info("{}", attributes);
+        Optional<User> isUser = userRepository.findByEmail(attributes.getEmail());
+        Boolean isSign;
+        User user;
+        if(isUser.isPresent()){
+            user = isUser.get();
+            isSign = TRUE;
+        }
+        else {
+            user = attributes.toEntity();
+            userRepository.save(user);
+            isSign = FALSE;
+        }
 
-        User user = saveOrUpdate(attributes);
+        //User user = saveOrUpdate(attributes);
 
-        return CustomUserDetail.create(user, oAuth2User.getAttributes());
+        return CustomUserDetail.create(user, oAuth2User.getAttributes(), isSign);
 /*        return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
                 attributes.getAttributes(),
