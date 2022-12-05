@@ -43,7 +43,7 @@ public class StarController extends CommController {
      */
     @GetMapping("/{bucketId}")
     public ResponseEntity select(@PathVariable Integer bucketId) {
-        List<Star> stars = starService.getStarByBucketId(bucketId);
+        List<Star> stars = starService.findStarByBucketId(bucketId);
 
         return SuccessReturn(stars);
     }

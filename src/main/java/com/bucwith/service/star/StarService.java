@@ -30,12 +30,12 @@ public class StarService {
         return starRepository.save(reqDto.toEntity(icon));
     }
 
-    public Star getStarById(int starId){
+    public Star findStarById(int starId){
         return starRepository.findById(starId)
                 .orElseThrow(() -> new NullPointerException("해당 Star가 없습니다. starId=" + starId));
     }
 
-    public List<Star> getStarByBucketId(int bucketId){
+    public List<Star> findStarByBucketId(int bucketId){
         return starRepository.findByBucketId(bucketId);
     }
 
