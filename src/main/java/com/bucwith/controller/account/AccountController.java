@@ -2,45 +2,35 @@ package com.bucwith.controller.account;
 
 import com.bucwith.common.CommController;
 import com.bucwith.common.config.JwtService;
-import com.bucwith.common.exception.BaseException;
-import com.bucwith.common.exception.ExceptionController;
-import com.bucwith.dto.user.UserNameReqDto;
-import com.bucwith.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.bucwith.common.config.oauth.secret.Secret.AUTHORIZATION;
+import static com.bucwith.common.config.oauth.secret.Secret.BEARER;
 
-
+@RequestMapping("/test")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class AccountController extends CommController {
-
-    private final UserService userService;
     private final JwtService jwtService;
 
-    /**
-     * 이름 수정
-     *  Request Data : UserNameReqDto(user name)
-     *  Response Data : success 반환
-     * @param reqDto
-     * @return
-     * @throws BaseException
-     */
-    @PutMapping("/name")
-    public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) throws BaseException {
-        Long userId = jwtService.getUserId();
-        userService.update(userId, reqDto);
-        return SuccessReturn(reqDto);
-
+    @GetMapping("/token/{userId}")
+    public ResponseEntity exampleToken(@PathVariable("userId") String userId) {
+        Long id = Long.valueOf(userId);
+        String Token = jwtService.createJwt(id);
+        //String BearerToken = BEARER + " " + Token;
+        //Map<String, String> token = new HashMap<>();
+        //token.put(AUTHORIZATION, BearerToken);
+        log.info("{}",Token);
+        return SuccessReturn(Token);
     }
-
 }
-
-
