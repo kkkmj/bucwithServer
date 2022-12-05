@@ -24,9 +24,8 @@ public class AccountController extends CommController {
     private final JwtService jwtService;
 
     @GetMapping("/token/{userId}")
-    public ResponseEntity exampleToken(@PathVariable("userId") String userId) {
-        Long id = Long.valueOf(userId);
-        String Token = jwtService.createJwt(id);
+    public ResponseEntity exampleToken(@PathVariable("userId") Long userId) {
+        String Token = jwtService.createJwt(userId);
         //String BearerToken = BEARER + " " + Token;
         //Map<String, String> token = new HashMap<>();
         //token.put(AUTHORIZATION, BearerToken);
