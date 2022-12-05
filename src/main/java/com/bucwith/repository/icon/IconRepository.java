@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.Optional;
 
 
-public interface IconRepository extends JpaRepository<Icon, Integer>, JpaSpecificationExecutor<Icon> {
+public interface IconRepository extends JpaRepository<Icon, String>, JpaSpecificationExecutor<Icon> {
 
     Optional<Icon> findByIconCode(String iconCode);
 }

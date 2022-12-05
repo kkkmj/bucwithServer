@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Setter
 public class StarReqDto {
     @NotNull private Integer bucketId;
     @NotBlank private String nickname;
