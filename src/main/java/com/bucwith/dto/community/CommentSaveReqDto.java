@@ -13,16 +13,16 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CommentSaveReqDto {
     private Long commuId;
-    private Long replyId;
+    private Long parentId;
     private Long userId;
     @NotBlank(message = "내용을 입력해주세요")
     private String content;
     private Boolean secret;
 
     @Builder
-    public CommentSaveReqDto(Long commuId, Long replyId, Long userId, String content, Boolean secret){
+    public CommentSaveReqDto(Long commuId, Long parentId, Long userId, String content, Boolean secret){
         this.commuId = commuId;
-        this.replyId = replyId;
+        this.parentId = parentId;
         this.userId = userId;
         this.content = content;
         this.secret = secret;
@@ -31,7 +31,7 @@ public class CommentSaveReqDto {
     public Comment toEntity(Community community, User user){
         return Comment.builder()
                 .community(community)
-                .replyId(replyId)
+                .parentId(parentId)
                 .user(user)
                 .content(content)
                 .secret(secret)

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CommentResDto {
     private Long commentId;
-    private Long replyId;
+    private Long parentId;
     private Long userId;
     private String userName;
     private String content;
@@ -21,8 +21,8 @@ public class CommentResDto {
     private LocalDateTime registDate;
 
     public CommentResDto(Comment entity){
-        this.commentId = entity.getComId();
-        this.replyId = entity.getReplyId();
+        this.commentId = entity.getCommentId();
+        this.parentId = entity.getParentId();
         this.userId = entity.getUser().getUserId();
         this.userName = entity.getUser().getName();
         this.content = entity.getContent();
