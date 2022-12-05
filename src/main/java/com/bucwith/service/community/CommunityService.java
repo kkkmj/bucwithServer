@@ -120,6 +120,12 @@ public class CommunityService {
         communityRepository.delete(community);
     }
 
+    //TODO 조회수 중복방지를 할지 말지?
+    @Transactional
+    public int updateView(Long commuId){
+        return communityRepository.updateView(commuId);
+    }
+
     @Transactional
     public Long commentSave(CommentSaveReqDto reqDto){
         User user = userRepository.findById(reqDto.getUserId())

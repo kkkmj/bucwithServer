@@ -27,6 +27,8 @@ public class Community {
     @Enumerated(EnumType.STRING)
     private CommuType type;
 
+    private Long viewCnt;
+
     @CreationTimestamp
     private LocalDateTime registDate;
 
