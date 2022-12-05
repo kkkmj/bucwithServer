@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface IconRepository extends JpaRepository<Icon, Integer>, JpaSpecificationExecutor<Icon> {
 
-    Optional<Icon> findByCode(String code);
+    Optional<Icon> findByIconCode(String iconCode);
 }
 
