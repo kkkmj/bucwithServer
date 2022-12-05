@@ -18,8 +18,8 @@ public class IconService {
 
     private final IconRepository iconRepository;
 
-    public Icon getIconByCode(String code) {
-        return iconRepository.findByCode(code)
+    public Icon findIconByCode(String code) {
+        return iconRepository.findByIconCode(code)
                 .orElseThrow(() -> new NullPointerException("NOT FOUND ICON"));
     }
 }

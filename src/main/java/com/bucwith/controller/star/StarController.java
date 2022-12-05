@@ -22,7 +22,6 @@ import java.util.List;
 public class StarController extends CommController {
 
     private final StarService starService;
-    private final IconService iconService;
 
     /*
      * Star(응원별) 등록
@@ -31,14 +30,7 @@ public class StarController extends CommController {
      */
     @PostMapping
     public ResponseEntity register(@Validated @RequestBody StarReqDto reqDto) {
-
-        Star star = starService.register(Star.builder()
-                .bucketId(reqDto.getBucketId())
-                .nickname(reqDto.getNickname())
-                .contents(reqDto.getContents())
-                .iconCode(reqDto.getIconCode())
-                .build()
-        );
+        Star star = starService.register(reqDto);
 
         return SuccessReturn(star);
     }
@@ -51,10 +43,7 @@ public class StarController extends CommController {
      */
     @GetMapping("/{bucketId}")
     public ResponseEntity select(@PathVariable Integer bucketId) {
-        List<Star> stars = starService.getStarByBucketId(bucketId);
-
-        for(Star star : stars)
-            star.setIcon(iconService.getIconByCode(star.getIconCode()));
+        List<Star> stars = starService.findStarByBucketId(bucketId);
 
         return SuccessReturn(stars);
     }

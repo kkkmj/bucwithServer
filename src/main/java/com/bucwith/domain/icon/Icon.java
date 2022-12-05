@@ -1,25 +1,18 @@
 package com.bucwith.domain.icon;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 
-@Data
+@Getter
+@Setter
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Icon {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer iconId;
-    private String code;
+    private String iconCode;
     private String imgUrl;
+    private LocalDateTime registDate;
 }
