@@ -32,10 +32,10 @@ public class CommunityService {
 
     //@Transactional
     public Long commuSave(CommuSaveReqDto reqDto){
-        User user  = userRepository.findById(reqDto.getUser().getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + reqDto.getUser().getUserId()));
+        User user  = userRepository.findById(reqDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + reqDto.getUserId()));
 
-        Long commuId = communityRepository.save(reqDto.toEntity()).getCommuId();
+        Long commuId = communityRepository.save(reqDto.toEntity(user)).getCommuId();
 
         if(!CollectionUtils.isEmpty(reqDto.getCategory())){
             SaveCategory(commuId, reqDto.getCategory());
@@ -117,7 +117,11 @@ public class CommunityService {
 
     @Transactional
     public Long commentSave(CommentSaveReqDto reqDto){
-        Long commentId = commentRepository.save(reqDto.toEntity()).getComId();
+        User user = userRepository.findById(reqDto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + reqDto.getUserId()));
+        Community community = communityRepository.findById(reqDto.getCommuId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + reqDto.getCommuId()));
+        Long commentId = commentRepository.save(reqDto.toEntity(community, user)).getComId();
 
         return commentId;
     }
