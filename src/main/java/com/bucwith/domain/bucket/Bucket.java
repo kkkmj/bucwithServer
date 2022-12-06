@@ -1,18 +1,17 @@
 package com.bucwith.domain.bucket;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.bucwith.dto.bucket.BucketModifyReqDto;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
-@Data
+@Getter
 @Entity
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bucket {
@@ -28,4 +27,15 @@ public class Bucket {
 
     @CreationTimestamp
     private LocalDateTime registDate;
+
+    public Bucket modify(BucketModifyReqDto reqDto) {
+        this.contents = reqDto.getContents();
+        this.type = reqDto.getType();
+        return this;
+    }
+
+    public Bucket finished() {
+        this.isFinished = !isFinished;
+        return this;
+    }
 }

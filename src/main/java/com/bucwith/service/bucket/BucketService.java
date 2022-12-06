@@ -29,35 +29,27 @@ public class BucketService {
     }
 
     public Bucket modify(BucketModifyReqDto reqDto) {
-        Bucket bucket = findBucketById(reqDto.getBucketId());
-        bucket.setContents(reqDto.getContents());
-        bucket.setType(reqDto.getType());
-
-        return bucketRepository.save(bucket);
+        return bucketRepository.save(getBucket(reqDto.getBucketId()).modify(reqDto));
     }
 
     public void remove(int bucketId) {
         bucketRepository.deleteById(bucketId);
     }
 
-    public Bucket findBucketById(int bucketId) {
+    public Bucket finished(int bucketId) {
+        return bucketRepository.save(getBucket(bucketId).finished());
+    }
+
+    public Bucket getBucket(int bucketId) {
         return bucketRepository.findById(bucketId)
                 .orElseThrow(() -> new NullPointerException("해당 Bucket이 없습니다. bucketId=" + bucketId));
     }
 
-    public List<Bucket> findBucketByUserId(int userId) {
-        List<Bucket> buckets = bucketRepository.findByUserId(userId);
-        buckets = buckets.stream().sorted(Comparator.comparing(Bucket::getIsFinished).reversed()
-                        .thenComparing(Bucket::getRegistDate).reversed())
+    // Buckets 조회 - 달성한 리스트는 하단 > 등록날짜 최신 순 정렬
+    public List<Bucket> getBuckets(int userId) {
+        return bucketRepository.findByUserId(userId).stream().sorted(
+                        Comparator.comparing(Bucket::getIsFinished).reversed()
+                                .thenComparing(Bucket::getRegistDate).reversed())
                 .collect(Collectors.toList());
-
-        return buckets;
-    }
-
-    public Bucket setFinished(int bucketId) {
-        Bucket bucket = findBucketById(bucketId);
-        bucket.setIsFinished(!bucket.getIsFinished());
-
-        return bucketRepository.save(bucket);
     }
 }
