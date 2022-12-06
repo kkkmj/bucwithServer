@@ -2,7 +2,6 @@ package com.bucwith.controller.bucket;
 
 
 import com.bucwith.common.CommController;
-import com.bucwith.domain.bucket.Bucket;
 import com.bucwith.dto.bucket.BucketModifyReqDto;
 import com.bucwith.dto.bucket.BucketReqDto;
 import com.bucwith.service.bucket.BucketService;
@@ -11,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @Slf4j
@@ -30,9 +27,7 @@ public class BucketController extends CommController {
      */
     @PostMapping
     public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) {
-        Bucket bucket = bucketService.register(reqDto);
-
-        return SuccessReturn(bucket);
+        return SuccessReturn(bucketService.register(reqDto));
     }
 
     /*
@@ -42,9 +37,7 @@ public class BucketController extends CommController {
      */
     @GetMapping("/{userId}")
     public ResponseEntity select(@PathVariable Integer userId) {
-        List<Bucket> buckets = bucketService.findBucketByUserId(userId);
-
-        return SuccessReturn(buckets);
+        return SuccessReturn(bucketService.getBuckets(userId));
     }
 
     /*
@@ -54,9 +47,7 @@ public class BucketController extends CommController {
      */
     @PutMapping
     public ResponseEntity modify(@Validated @RequestBody BucketModifyReqDto reqDto) {
-        Bucket bucket = bucketService.modify(reqDto);
-
-        return SuccessReturn(bucket);
+        return SuccessReturn(bucketService.modify(reqDto));
     }
 
     /*
@@ -78,8 +69,6 @@ public class BucketController extends CommController {
      */
     @PostMapping("/finish/{bucketId}")
     public ResponseEntity setFinished(@PathVariable Integer bucketId) {
-        Bucket bucket = bucketService.setFinished(bucketId);
-
-        return SuccessReturn(bucket);
+        return SuccessReturn(bucketService.finished(bucketId));
     }
 }
