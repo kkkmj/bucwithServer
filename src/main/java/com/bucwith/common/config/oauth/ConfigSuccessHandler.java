@@ -36,10 +36,11 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
         Long userId = Long.valueOf(user.getName());
+        String name = user.getUname();
 
         String targetUrl;
         log.info("토큰 발행 시작");
-        String token = jwtService.createJwt(userId);
+        String token = jwtService.createJwt(userId, name);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
 
