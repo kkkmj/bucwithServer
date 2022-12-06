@@ -2,17 +2,13 @@ package com.bucwith.controller.star;
 
 
 import com.bucwith.common.CommController;
-import com.bucwith.domain.star.Star;
 import com.bucwith.dto.star.StarReqDto;
-import com.bucwith.service.icon.IconService;
 import com.bucwith.service.star.StarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @Slf4j
@@ -30,9 +26,7 @@ public class StarController extends CommController {
      */
     @PostMapping
     public ResponseEntity register(@Validated @RequestBody StarReqDto reqDto) {
-        Star star = starService.register(reqDto);
-
-        return SuccessReturn(star);
+        return SuccessReturn(starService.register(reqDto));
     }
 
     /*
@@ -43,9 +37,7 @@ public class StarController extends CommController {
      */
     @GetMapping("/{bucketId}")
     public ResponseEntity select(@PathVariable Integer bucketId) {
-        List<Star> stars = starService.findStarByBucketId(bucketId);
-
-        return SuccessReturn(stars);
+        return SuccessReturn(starService.getStarByBucketId(bucketId));
     }
 
     /*
