@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -28,14 +30,7 @@ public class BucketController extends CommController {
      */
     @PostMapping
     public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) {
-
-        Bucket bucket = bucketService.register(Bucket.builder()
-                .userId(reqDto.getUserId())
-                .contents(reqDto.getContents())
-                .type(reqDto.getType())
-                .isFinished(false)
-                .build()
-        );
+        Bucket bucket = bucketService.register(reqDto);
 
         return SuccessReturn(bucket);
     }
@@ -47,7 +42,9 @@ public class BucketController extends CommController {
      */
     @GetMapping("/{userId}")
     public ResponseEntity select(@PathVariable Integer userId) {
-        return SuccessReturn(bucketService.getBucketByUserId(userId));
+        List<Bucket> buckets = bucketService.findBucketByUserId(userId);
+
+        return SuccessReturn(buckets);
     }
 
     /*
@@ -57,11 +54,9 @@ public class BucketController extends CommController {
      */
     @PutMapping
     public ResponseEntity modify(@Validated @RequestBody BucketModifyReqDto reqDto) {
-        Bucket bucket = bucketService.getBucketById(reqDto.getBucketId());
-        bucket.setContents(reqDto.getContents());
-        bucket.setType(reqDto.getType());
+        Bucket bucket = bucketService.modify(reqDto);
 
-        return SuccessReturn(bucketService.register(bucket));
+        return SuccessReturn(bucket);
     }
 
     /*
@@ -72,6 +67,7 @@ public class BucketController extends CommController {
     @DeleteMapping("/{bucketId}")
     public ResponseEntity delete(@PathVariable Integer bucketId) {
         bucketService.remove(bucketId);
+
         return SuccessReturn();
     }
 
@@ -82,10 +78,8 @@ public class BucketController extends CommController {
      */
     @PostMapping("/finish/{bucketId}")
     public ResponseEntity setFinished(@PathVariable Integer bucketId) {
+        Bucket bucket = bucketService.setFinished(bucketId);
 
-        Bucket bucket = bucketService.getBucketById(bucketId);
-        bucket.setIsFinished(!bucket.getIsFinished());
-
-        return SuccessReturn(bucketService.register(bucket));
+        return SuccessReturn(bucket);
     }
 }
