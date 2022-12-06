@@ -1,33 +1,32 @@
-package com.bucwith.dto.community;
+package com.bucwith.dto.comment;
 
-import com.bucwith.domain.account.User;
-import com.bucwith.domain.community.Comment;
-import com.bucwith.domain.community.Community;
+import com.bucwith.domain.comment.Comment;
 import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-
-public class CommentResDto {
+public class CommentAllResDto {
     private Long commentId;
+    private Long commuId;
     private Long parentId;
     private Long userId;
     private String userName;
     private String content;
     private Boolean secret;
     private LocalDateTime registDate;
+    private List<CommentResDto> replys;
 
-    public CommentResDto(Comment entity){
+    public CommentAllResDto(Comment entity, List<CommentResDto> replys){
         this.commentId = entity.getCommentId();
+        this.commuId = entity.getCommunity().getCommuId();
         this.parentId = entity.getParentId();
         this.userId = entity.getUser().getUserId();
         this.userName = entity.getUser().getName();
         this.content = entity.getContent();
         this.secret = entity.getSecret();
         this.registDate = entity.getRegistDate();
+        this.replys = replys;
     }
-
 }

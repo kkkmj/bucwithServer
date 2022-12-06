@@ -1,10 +1,12 @@
-package com.bucwith.domain.community;
+package com.bucwith.domain.comment;
 
 import com.bucwith.domain.account.User;
+import com.bucwith.domain.community.Community;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
+@DynamicInsert
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
