@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CommuCateRepository extends JpaRepository<CommuCate, Long> {
     List<CommuCate> findByCommunity(Community community);
+
 }

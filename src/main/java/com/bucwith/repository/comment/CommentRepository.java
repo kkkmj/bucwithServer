@@ -1,7 +1,6 @@
-package com.bucwith.repository.community;
+package com.bucwith.repository.comment;
 
-import com.bucwith.domain.community.Comment;
-import com.bucwith.domain.community.Community;
+import com.bucwith.domain.comment.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +12,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     //대댓글이 아닌 댓글 전체 조회
-    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId IS NULL ORDER BY c.commentId ASC")
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId = 0 ORDER BY c.commentId ASC")
     List<Comment> findCommentAsc(@Param("commuId") Long commuId);
 
     //댓글에 해당하는 대댓글 조회
@@ -21,7 +20,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findReplyAsc(@Param("commuId") Long commuId, @Param("parentId") Long parentId);
 
     //대댓글 전체 조회
-    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId IS NOT NULL ORDER BY c.commentId ASC")
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId <> 0 ORDER BY c.commentId ASC")
     List<Comment> findReplysAsc(@Param("commuId") Long commuId);
 
     //댓글 전체 조회

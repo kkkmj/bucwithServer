@@ -1,4 +1,4 @@
-package com.bucwith.dto.community;
+package com.bucwith.dto.comment;
 
 import com.bucwith.domain.account.User;
 import com.bucwith.domain.community.Community;

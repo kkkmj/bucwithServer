@@ -1,10 +1,12 @@
 package com.bucwith.domain.community;
 
 import com.bucwith.domain.account.User;
+import com.bucwith.domain.comment.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
+@DynamicInsert
 public class Community {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class Community {
     @Enumerated(EnumType.STRING)
     private CommuType type;
 
-    private Long viewCnt;
+    private int viewCnt;
 
     @CreationTimestamp
     private LocalDateTime registDate;
