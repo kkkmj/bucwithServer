@@ -27,6 +27,8 @@ public class Community {
     @Enumerated(EnumType.STRING)
     private CommuType type;
 
+    private Long viewCnt;
+
     @CreationTimestamp
     private LocalDateTime registDate;
 
@@ -36,7 +38,7 @@ public class Community {
     private int commentCnt;
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
-    @OrderBy("comId asc")
+    @OrderBy("commentId asc")
     private List<Comment> comments = new ArrayList<Comment>();
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)

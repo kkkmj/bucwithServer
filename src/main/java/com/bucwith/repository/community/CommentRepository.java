@@ -12,14 +12,21 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.replyId IS NULL ORDER BY c.comId ASC")
-    List<Comment> findCommentDesc(@Param("commuId") Long commuId);
+    //대댓글이 아닌 댓글 전체 조회
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId IS NULL ORDER BY c.commentId ASC")
+    List<Comment> findCommentAsc(@Param("commuId") Long commuId);
 
-    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.replyId = :replyId ORDER BY c.comId ASC")
-    List<Comment> findReplyDesc(@Param("commuId") Long commuId, @Param("replyId") Long replyId);
+    //댓글에 해당하는 대댓글 조회
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId = :parentId ORDER BY c.commentId ASC")
+    List<Comment> findReplyAsc(@Param("commuId") Long commuId, @Param("parentId") Long parentId);
 
-    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId ORDER BY c.comId ASC")
-    List<Comment> findAllDesc(@Param("commuId") Long commuId);
+    //대댓글 전체 조회
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId AND c.parentId IS NOT NULL ORDER BY c.commentId ASC")
+    List<Comment> findReplysAsc(@Param("commuId") Long commuId);
+
+    //댓글 전체 조회
+    @Query("SELECT c FROM Comment c WHERE c.community.commuId = :commuId ORDER BY c.commentId ASC")
+    List<Comment> findAllAsc(@Param("commuId") Long commuId);
 
     @Query("SELECT COUNT( c ) FROM Comment c WHERE c.community.commuId = :commuId")
     Long CountByCommunity(@Param("commuId") Long commuId);

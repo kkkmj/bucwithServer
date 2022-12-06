@@ -10,7 +10,7 @@ import java.util.List;
 public class CommentAllResDto {
     private Long commentId;
     private Long commuId;
-    private Long replyId;
+    private Long parentId;
     private Long userId;
     private String userName;
     private String content;
@@ -19,9 +19,9 @@ public class CommentAllResDto {
     private List<CommentResDto> replys;
 
     public CommentAllResDto(Comment entity, List<CommentResDto> replys){
-        this.commentId = entity.getComId();
+        this.commentId = entity.getCommentId();
         this.commuId = entity.getCommunity().getCommuId();
-        this.replyId = entity.getReplyId();
+        this.parentId = entity.getParentId();
         this.userId = entity.getUser().getUserId();
         this.userName = entity.getUser().getName();
         this.content = entity.getContent();

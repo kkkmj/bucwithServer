@@ -20,6 +20,7 @@ public class CommuResDto {
     private Long likeCnt;
     private Long commentCnt;
     private Boolean isLike;
+    private Long viewCnt;
     private LocalDateTime registDate;
 
     public CommuResDto(Community entity, List<Category> categoryList, Long likeCnt, Long commentCnt, Boolean isLike){
@@ -28,6 +29,7 @@ public class CommuResDto {
         this.content = entity.getContent();
         this.type = entity.getType();
         this.party = entity.getParty();
+        this.viewCnt = entity.getViewCnt();
         this.registDate = entity.getRegistDate();
         this.categoryList = categoryList;
         this.likeCnt = likeCnt;

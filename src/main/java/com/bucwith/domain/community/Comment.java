@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long comId;
+    private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="commuId")
     private Community community;
 
-    private Long replyId;
+    private Long parentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
@@ -35,9 +35,9 @@ public class Comment {
     private LocalDateTime registDate;
 
     @Builder
-    public Comment(Community community, Long replyId, User user, String content, Boolean secret) {
+    public Comment(Community community, Long parentId, User user, String content, Boolean secret) {
         this.community = community;
-        this.replyId = replyId;
+        this.parentId = parentId;
         this.user = user;
         this.secret = secret;
         this.content = content;

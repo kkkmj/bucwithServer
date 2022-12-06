@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CommuSaveReqDto {
 
-    private User user;
+    private Long userId;
     @NotBlank(message = "내용을 입력해주세요")
     private String content;
     private CommuType type;
@@ -23,8 +23,8 @@ public class CommuSaveReqDto {
     private int party;
 
     @Builder
-    public CommuSaveReqDto(User user, String content, CommuType type, List<Category> category, int party){
-        this.user = user;
+    public CommuSaveReqDto(Long userId, String content, CommuType type, List<Category> category, int party){
+        this.userId = userId;
         this.content = content;
         this.type = type;
         this.category = category;
@@ -32,7 +32,7 @@ public class CommuSaveReqDto {
     }
 
 
-    public Community toEntity(){
+    public Community toEntity(User user){
         return Community.builder()
                 .user(user)
                 .content(content)

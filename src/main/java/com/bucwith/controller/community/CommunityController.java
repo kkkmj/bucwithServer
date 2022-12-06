@@ -43,6 +43,7 @@ public class CommunityController extends CommController {
 
     /**
      * 특정 게시글 조회!
+     * 조회수 증가
      * @param commuId
      * @return (글번호, 유저이름, 내용, 타입, 카테고리 배열, 파티원수, 좋아요 수, 댓글 수, 작성시간, 좋아요 유무)
      */
@@ -50,6 +51,7 @@ public class CommunityController extends CommController {
     public ResponseEntity findCommuById(@PathVariable Long commuId) throws BaseException {
         Long userId=jwtService.getUserId();
         CommuResDto resDto = communityService.findCommuById(userId, commuId);
+        communityService.updateView(commuId);
         return SuccessReturn(resDto);
     }
 
