@@ -4,13 +4,13 @@ import com.bucwith.common.CommController;
 import com.bucwith.common.config.JwtService;
 import com.bucwith.common.exception.BaseException;
 import com.bucwith.dto.community.*;
+import com.bucwith.dto.comment.CommentModifyReqDto;
+import com.bucwith.dto.comment.CommentSaveReqDto;
 import com.bucwith.service.community.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +26,7 @@ public class CommunityController extends CommController {
      */
     @PostMapping()
     public ResponseEntity commuSave(@Validated @RequestBody CommuSaveReqDto reqDto) throws BaseException {
-        Long commuId = communityService.commuSave(reqDto);
-        return SuccessReturn(commuId);
+        return SuccessReturn(communityService.commuSave(reqDto));
     }
 
     /**
@@ -37,8 +36,7 @@ public class CommunityController extends CommController {
     @GetMapping()
     public ResponseEntity findCommuAll() throws BaseException {
         Long userId=jwtService.getUserId();
-        List<CommuResDto> commu = communityService.findCommuAllDesc(userId);
-        return SuccessReturn(commu);
+        return SuccessReturn(communityService.findCommuAllDesc(userId));
     }
 
     /**
@@ -50,9 +48,8 @@ public class CommunityController extends CommController {
     @GetMapping("/{commuId}")
     public ResponseEntity findCommuById(@PathVariable Long commuId) throws BaseException {
         Long userId=jwtService.getUserId();
-        CommuResDto resDto = communityService.findCommuById(userId, commuId);
         communityService.updateView(commuId);
-        return SuccessReturn(resDto);
+        return SuccessReturn(communityService.findCommuById(userId, commuId));
     }
 
     /**
@@ -63,8 +60,7 @@ public class CommunityController extends CommController {
      */
     @PutMapping("/{commuId}")
     public ResponseEntity modifyCommu(@PathVariable Long commuId, @Validated @RequestBody CommuModifyReqDto reqDto) {
-        Long modifyId = communityService.modifyCommu(commuId, reqDto);
-        return SuccessReturn(modifyId);
+        return SuccessReturn(communityService.modifyCommu(commuId, reqDto));
     }
 
     /**
@@ -79,54 +75,6 @@ public class CommunityController extends CommController {
     }
 
     /**
-     * 댓글 등록!
-     * @param commuId
-     * @param reqDto (글번호, 댓글번호, 유저번호, 내용, 비밀여부)
-     * @return 작성된 댓글 id
-     */
-    @PostMapping("/{commuId}/comment")
-    public ResponseEntity commentSave(@PathVariable Long commuId, @Validated @RequestBody CommentSaveReqDto reqDto) throws BaseException {
-        Long commentId = communityService.commentSave(reqDto);
-        return SuccessReturn(commentId);
-    }
-
-    /**
-     * 댓글 조회 리스트!
-     * @param commuId
-     * @return (댓글 번호, 글번호, 댓글 번호, 유저이름, 내용, 비밀여부, 등록날짜)
-     */
-    @GetMapping("/{commuId}/comment")
-    public ResponseEntity findCommentAll(@PathVariable Long commuId){
-        List<CommentAllResDto> comment = communityService.findCommentAllDesc(commuId);
-        return SuccessReturn(comment);
-    }
-
-    /**
-     * 댓글 수정
-     * @param commentId
-     * @param reqDto
-     * @return 수정 댓글id
-     */
-    @PutMapping("/comment/{commentId}")
-    public ResponseEntity modifyComment(@PathVariable Long commentId, @Validated @RequestBody CommentModifyReqDto reqDto) {
-        Long modifyId = communityService.modifyComment(commentId, reqDto);
-        return SuccessReturn(modifyId);
-    }
-
-    /**
-     * 댓글 삭제
-     * @param commentId
-     * @return 삭제된 댓글 id
-     */
-    @DeleteMapping("/comment/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable Long commentId){
-        communityService.deleteComment(commentId);
-        return SuccessReturn(commentId);
-    }
-
-
-
-    /**
      * 게시글 좋아요!
      * @param commuId
      * @return 게시글 좋아요 데이터 없을 시 좋아요 등록/ 있을 시 좋아요 취소
@@ -138,8 +86,4 @@ public class CommunityController extends CommController {
         communityService.commuLike(commuId,userId);
         return SuccessReturn();
     }
-
-
-
-
 }
