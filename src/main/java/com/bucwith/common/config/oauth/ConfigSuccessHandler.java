@@ -45,7 +45,7 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("{}", token);
 
         /* 로그인 뒤 redirect처리*/
-        targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/me/list")
+        targetUrl = UriComponentsBuilder.fromUriString("http://61.97.184.195:80/me/list")
                 .queryParam("token", token)
                 .build().toUriString();
         if (response.isCommitted()) {
@@ -58,7 +58,7 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String result = objectMapper.writeValueAsString(new UserResponseDto(user));
 
         response.getWriter().write(result);
-        //getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
 
