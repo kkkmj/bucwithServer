@@ -81,13 +81,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             isSign = FALSE;
         }
 
-        //User user = saveOrUpdate(attributes);
-
         return CustomUserDetail.create(user, oAuth2User.getAttributes(), isSign);
-/*        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
-                attributes.getAttributes(),
-                attributes.getNameAttributeKey());*/
+
     }
 
 

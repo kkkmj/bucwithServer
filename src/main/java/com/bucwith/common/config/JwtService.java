@@ -1,6 +1,5 @@
 package com.bucwith.common.config;
 
-import com.bucwith.common.config.oauth.CustomUserDetailService;
 import com.bucwith.common.config.oauth.dto.CustomUserDetail;
 import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
@@ -10,9 +9,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -20,10 +17,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import static com.bucwith.common.code.ApiCode.EMPTY_JWT;
 import static com.bucwith.common.code.ApiCode.INVALID_JWT;
@@ -38,23 +33,19 @@ import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
  */
 @Service
 public class JwtService {
-    private final CustomUserDetailService userDetailService;
 
     private static final String AUTHORITIES_KEY = "role";
-
-    public JwtService(CustomUserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
-    }
 
     /**
         JWT 생성
         @param userId, role
         @return String
          **/
-    public String createJwt(Long userId){
+    public String createJwt(Long userId, String name){
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .claim("userId",userId)
+                .claim("name", name)
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
@@ -82,8 +73,10 @@ public class JwtService {
     public Authentication getAuthentication(String token){
         // 디비를 거치지 않고 토큰에서 값을 꺼내 바로 시큐리티 유저 객체를 만들어 Authentication을 만들어 반환하기에 유저네임, 권한 외 정보는 알 수 없다.
 
-        CustomUserDetail userDetail = userDetailService.loadUserById(this.getUserId(token));
+        //CustomUserDetail userDetail = userDetailService.loadUserById(this.getUserId(token));
 
+        CustomUserDetail userDetail = new CustomUserDetail(getUserId(token),getUserName(token),Collections.
+                singletonList(new SimpleGrantedAuthority("ROLE_USER")));
         return new UsernamePasswordAuthenticationToken(userDetail, token, userDetail.getAuthorities());
     }
 
@@ -132,6 +125,10 @@ public class JwtService {
     public Long getUserId(String token){
         return Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
                 .parseClaimsJws(token).getBody().get("userId", Long.class);
+    }
+    public String getUserName(String token){
+        return Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(token).getBody().get("name", String.class);
     }
 
 

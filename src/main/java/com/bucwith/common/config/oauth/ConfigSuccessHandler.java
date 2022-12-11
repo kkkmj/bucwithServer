@@ -36,17 +36,14 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
         Long userId = Long.valueOf(user.getName());
+        String name = user.getUname();
 
-        String targetUrl;
+
         log.info("토큰 발행 시작");
-        String token = jwtService.createJwt(userId);
+        String token = jwtService.createJwt(userId, name);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
-
-        /* 로그인 뒤 redirect처리*/
-        targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/me/list")
-                .queryParam("token", token)
-                .build().toUriString();
+        String targetUrl = getUrl(token, user.getIsSign());
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -54,13 +51,25 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setContentType("application/json;charset=UTF-8");
 
         response.addHeader("Authorization", token);
-        String result = objectMapper.writeValueAsString(new UserResponseDto(user));
+        String result = objectMapper.writeValueAsString(new UserResponseDto(user, token));
 
         response.getWriter().write(result);
-        //getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+
     }
 
-
-
+    public String getUrl(String token, Boolean isSign){
+        String path;
+        if(isSign==Boolean.TRUE){
+            path = "me/list";
+        }
+        else {
+            path = "nickname";
+        }
+        return UriComponentsBuilder.fromUriString("http://61.97.184.195:80/{path}")
+                .queryParam("token", token)
+                .buildAndExpand(path).toUriString();
+    }
 
 }
