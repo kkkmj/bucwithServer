@@ -38,48 +38,38 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Long userId = Long.valueOf(user.getName());
         String name = user.getUname();
 
-        String targetUrl;
+
         log.info("토큰 발행 시작");
         String token = jwtService.createJwt(userId, name);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
+        String targetUrl = getUrl(token, user.getIsSign());
+        if (response.isCommitted()) {
+            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            return;
+        }
+        response.setContentType("application/json;charset=UTF-8");
 
-        //TODO 코드너무 더러움..
-        if(user.getIsSign()==Boolean.TRUE){
-            /* 로그인 뒤 redirect처리*/
-            targetUrl = UriComponentsBuilder.fromUriString("http://61.97.184.195:80/me/list")
-                    .queryParam("token", token)
-                    .build().toUriString();
-            if (response.isCommitted()) {
-                logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-                return;
-            }
-            response.setContentType("application/json;charset=UTF-8");
+        response.addHeader("Authorization", token);
+        String result = objectMapper.writeValueAsString(new UserResponseDto(user, token));
 
-            response.addHeader("Authorization", token);
-            String result = objectMapper.writeValueAsString(new UserResponseDto(user, token));
+        response.getWriter().write(result);
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
-            response.getWriter().write(result);
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+    }
+
+    public String getUrl(String token, Boolean isSign){
+        String path;
+        if(isSign==Boolean.TRUE){
+            path = "me/list";
         }
         else {
-            /* 로그인 뒤 redirect처리*/
-            targetUrl = UriComponentsBuilder.fromUriString("http://61.97.184.195:80/nickname")
-                    .queryParam("token", token)
-                    .build().toUriString();
-            if (response.isCommitted()) {
-                logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
-                return;
-            }
-            response.setContentType("application/json;charset=UTF-8");
-
-            response.addHeader("Authorization", token);
-            String result = objectMapper.writeValueAsString(new UserResponseDto(user, token));
-
-            response.getWriter().write(result);
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+            path = "nickname";
         }
-
+        return UriComponentsBuilder.fromUriString("http://61.97.184.195:80/{path}")
+                .queryParam("token", token)
+                .buildAndExpand(path).toUriString();
     }
 
 }
