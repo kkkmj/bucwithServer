@@ -1,7 +1,11 @@
-package com.bucwith.domain.community;
+package com.bucwith.domain.commuCategory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 
+@Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Category {
     CC001("CC001","영화"), // 벅윗 파티원 모집
 
@@ -35,10 +39,6 @@ public enum Category {
     Category(String code, String desc) {
         this.code = code;
         this.desc = desc;
-    }
-
-    public String getCode() {
-        return this.code;
     }
 
     // @RequestBody ENUM Parsing

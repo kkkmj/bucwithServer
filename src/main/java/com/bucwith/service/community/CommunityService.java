@@ -1,9 +1,11 @@
 package com.bucwith.service.community;
 
 import com.bucwith.domain.account.User;
+import com.bucwith.domain.commuCategory.Category;
+import com.bucwith.domain.commuCategory.CommuCate;
 import com.bucwith.domain.community.*;
 import com.bucwith.dto.community.*;
-import com.bucwith.repository.community.CommuCateRepository;
+import com.bucwith.repository.commuCategory.CommuCateRepository;
 import com.bucwith.repository.community.CommunityRepository;
 import com.bucwith.repository.community.ClikeRepository;
 import com.bucwith.service.user.UserService;
@@ -13,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -66,6 +66,10 @@ public class CommunityService {
     @Transactional
     public void deleteCommu(Long commuId){
         communityRepository.deleteById(commuId);
+    }
+
+    public Category[] findCategory(){
+        return Category.values();
     }
 
     @Transactional

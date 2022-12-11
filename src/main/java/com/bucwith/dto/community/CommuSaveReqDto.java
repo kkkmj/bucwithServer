@@ -1,7 +1,7 @@
 package com.bucwith.dto.community;
 
 import com.bucwith.domain.account.User;
-import com.bucwith.domain.community.Category;
+import com.bucwith.domain.commuCategory.Category;
 import com.bucwith.domain.community.CommuType;
 import com.bucwith.domain.community.Community;
 import lombok.Builder;

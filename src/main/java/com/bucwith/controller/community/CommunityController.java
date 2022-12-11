@@ -74,6 +74,12 @@ public class CommunityController extends CommController {
         return SuccessReturn(commuId);
     }
 
+    @GetMapping("/category")
+    public ResponseEntity findCategory(){
+        return SuccessReturn(communityService.findCategory());
+    }
+
+
     /**
      * 게시글 좋아요!
      * @param commuId
