@@ -1,7 +1,6 @@
-package com.bucwith.dto.community;
+package com.bucwith.dto.commuCategory;
 
-import com.bucwith.domain.community.Category;
-import com.bucwith.domain.community.Community;
+import com.bucwith.domain.commuCategory.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

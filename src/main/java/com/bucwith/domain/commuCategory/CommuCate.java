@@ -1,5 +1,6 @@
-package com.bucwith.domain.community;
+package com.bucwith.domain.commuCategory;
 
+import com.bucwith.domain.community.Community;
 import lombok.*;
 
 import javax.persistence.*;
