@@ -50,4 +50,9 @@ public class Comment {
         this.content = content;
         this.secret = secret;
     }
+
+    public void delete(){
+        this.content = "삭제된 댓글입니다.";
+        this.secret = Boolean.FALSE;
+    }
 }

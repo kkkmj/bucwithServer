@@ -2,7 +2,6 @@ package com.bucwith.dto.comment;
 
 import com.bucwith.domain.comment.Comment;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;

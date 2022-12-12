@@ -56,9 +56,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId){
+    public Long deleteComment(Long commentId){
         communityRepository.updateMinusComment(getComment(commentId).getCommunity().getCommuId());
-        commentRepository.deleteById(commentId);
+        getComment(commentId).delete();
+        return commentId;
     }
 
     public Comment getComment(Long commentId){

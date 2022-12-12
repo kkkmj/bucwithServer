@@ -56,7 +56,8 @@ public class CommentController extends CommController {
      * 댓글 삭제
      * @param commentId
      * 삭제 시 댓글개수 -1
-     * @return 삭제된 댓글 id
+     * 대댓글때문에 댓글 삭제시 내용만 삭제된 댓글입니다. 로 변경
+     * @return 삭제된 댓글
      */
     @DeleteMapping("/{commentId}")
     public ResponseEntity deleteComment(@PathVariable Long commentId){
