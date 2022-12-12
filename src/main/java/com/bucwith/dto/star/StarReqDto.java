@@ -1,6 +1,5 @@
 package com.bucwith.dto.star;
 
-import com.bucwith.domain.icon.Icon;
 import com.bucwith.domain.star.Star;
 import lombok.*;
 
@@ -14,12 +13,12 @@ public class StarReqDto {
     @NotBlank private String contents;
     @NotBlank private String iconCode; // icon Table 조회를 위한 Code
 
-    public Star toEntity(Icon icon) {
+    public Star toEntity() {
         return Star.builder()
                 .bucketId(bucketId)
                 .nickname(nickname)
                 .contents(contents)
-                .icon(icon)
+                .iconCode(iconCode)
                 .build();
     }
 }

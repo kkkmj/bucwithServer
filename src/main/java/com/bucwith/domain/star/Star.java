@@ -1,7 +1,6 @@
 package com.bucwith.domain.star;
 
 
-import com.bucwith.domain.icon.Icon;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -21,10 +20,11 @@ public class Star {
     private Integer bucketId;
     private String contents;
     private String nickname;
+    private String iconCode;
 
-    @OneToOne
-    @JoinColumn(name="iconCode")
-    private Icon icon;
+//    @OneToOne
+//    @JoinColumn(name="iconCode")
+//    private Icon icon;
 
     @CreationTimestamp
     private LocalDateTime registDate;
