@@ -77,6 +77,12 @@ public class CommunityService {
         return Category.values();
     }
 
+    @Transactional(readOnly = true)
+    public List<CommuResDto> findMyCommunities(Long userId){
+        return communityRepository.findMyCommunities(userId).stream().map(community -> new CommuResDto(community,
+                getCategory(community),getLike(community, userService.getUser(userId)))).collect(Collectors.toList());
+    }
+
     @Transactional
     public void commuLike(Long commuId, Long userId){
         Optional<Clike> isLike = clikeRepository.findByCommunityAndUser(getCommu(commuId), userService.getUser(userId));

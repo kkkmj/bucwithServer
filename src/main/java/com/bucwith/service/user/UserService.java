@@ -1,12 +1,18 @@
 package com.bucwith.service.user;
 
 import com.bucwith.domain.user.User;
+import com.bucwith.dto.community.CommuResDto;
 import com.bucwith.dto.user.UserIconReqDto;
+import com.bucwith.repository.community.CommunityRepository;
 import com.bucwith.repository.user.UserRepository;
 import com.bucwith.dto.user.UserNameReqDto;
+import com.bucwith.service.community.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
