@@ -4,7 +4,6 @@ package com.bucwith.service.star;
 import com.bucwith.domain.star.Star;
 import com.bucwith.dto.star.StarReqDto;
 import com.bucwith.repository.star.StarRepository;
-import com.bucwith.service.icon.IconService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,10 +19,9 @@ import java.util.List;
 public class StarService {
 
     private final StarRepository starRepository;
-    private final IconService iconService;
 
     public Star register(StarReqDto reqDto) {
-        return starRepository.save(reqDto.toEntity(iconService.getIcon(reqDto.getIconCode())));
+        return starRepository.save(reqDto.toEntity());
     }
 
     public void remove(int starId) {
