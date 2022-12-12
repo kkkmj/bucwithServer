@@ -1,4 +1,4 @@
-package com.bucwith.domain.account;
+package com.bucwith.domain.user;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +46,10 @@ public class User {
     public User updateName(String name) {
         this.name = name;
         return this;
+    }
+    public void updateIcon(String iconCode, String bgColor){
+        this.iconCode = iconCode;
+        this.bgColor = bgColor;
     }
 
     public String getRoleKey() {

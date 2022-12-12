@@ -1,7 +1,7 @@
 package com.bucwith.common.config.oauth.dto;
 
-import com.bucwith.domain.account.Role;
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.Role;
+import com.bucwith.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 

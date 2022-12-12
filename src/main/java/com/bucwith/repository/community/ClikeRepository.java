@@ -1,6 +1,6 @@
 package com.bucwith.repository.community;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import com.bucwith.domain.community.Community;
 import com.bucwith.domain.community.Clike;
 import org.springframework.data.jpa.repository.JpaRepository;

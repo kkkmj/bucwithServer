@@ -3,7 +3,6 @@ package com.bucwith.common.config;
 import com.bucwith.common.config.oauth.ConfigSuccessHandler;
 import com.bucwith.common.config.oauth.CustomOAuth2UserService;
 import com.bucwith.common.config.oauth.JwtAuthenticationFilter;
-import com.bucwith.domain.account.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration

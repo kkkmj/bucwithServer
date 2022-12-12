@@ -1,7 +1,5 @@
 package com.bucwith.dto.comment;
 
-import com.bucwith.domain.account.User;
-import com.bucwith.domain.community.Community;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
