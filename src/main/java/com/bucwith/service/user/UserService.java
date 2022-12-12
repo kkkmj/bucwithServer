@@ -28,6 +28,7 @@ public class UserService {
         return userId;
     }
 
+    @Transactional
     public Long updateIcon(Long userId, UserIconReqDto reqDto){
         User user = getUser(userId);
         user.updateIcon(reqDto.getIconCode(), reqDto.getBgColor());
