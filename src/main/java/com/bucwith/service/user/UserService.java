@@ -15,9 +15,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long update(Long id, UserNameReqDto reqDto) {
+    public Long updateName(Long id, UserNameReqDto reqDto) {
         User user = getUser(id);
-        user.update(reqDto.getName());
+        user.updateName(reqDto.getName());
 
         return id;
     }

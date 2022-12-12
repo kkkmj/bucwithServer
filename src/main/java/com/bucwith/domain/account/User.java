@@ -4,11 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
+@DynamicInsert
 @Getter
 @NoArgsConstructor
 @Entity
@@ -28,6 +29,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    private String iconCode;
+    private String bgColor;
+
     @CreationTimestamp
     private LocalDateTime registDate;
 
@@ -39,7 +43,7 @@ public class User {
         this.role = role;
     }
 
-    public User update(String name) {
+    public User updateName(String name) {
         this.name = name;
         return this;
     }

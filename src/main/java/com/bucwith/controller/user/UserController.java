@@ -32,7 +32,7 @@ public class UserController extends CommController {
     @PutMapping("/name")
     public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) throws BaseException {
         Long userId = jwtService.getUserId();
-        userService.update(userId, reqDto);
+        userService.updateName(userId, reqDto);
         return SuccessReturn(reqDto);
 
     }
