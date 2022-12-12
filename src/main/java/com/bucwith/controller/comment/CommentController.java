@@ -1,6 +1,7 @@
 package com.bucwith.controller.comment;
 
 import com.bucwith.common.CommController;
+import com.bucwith.common.config.JwtService;
 import com.bucwith.common.exception.BaseException;
 import com.bucwith.dto.comment.CommentModifyReqDto;
 import com.bucwith.dto.comment.CommentSaveReqDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController extends CommController {
 
     private final CommentService commentService;
+    private final JwtService jwtService;
 
     /**
      * 댓글 등록!
@@ -34,8 +36,9 @@ public class CommentController extends CommController {
      * @return (댓글 번호, 글번호, 댓글 번호, 유저이름, 내용, 비밀여부, 등록날짜)
      */
     @GetMapping("/{commuId}")
-    public ResponseEntity findCommentAll(@PathVariable Long commuId){
-        return SuccessReturn(commentService.findCommentAllDesc(commuId));
+    public ResponseEntity findCommentAll(@PathVariable Long commuId) throws BaseException {
+        Long userId = jwtService.getUserId();
+        return SuccessReturn(commentService.findCommentAllDesc(commuId, userId));
     }
 
     /**
