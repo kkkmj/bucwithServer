@@ -43,7 +43,7 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtService.createJwt(userId, name);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
-        String targetUrl = getUrl(token, user.getIsSign());
+        String targetUrl = getUrl(token);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -59,17 +59,10 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     }
 
-    public String getUrl(String token, Boolean isSign){
-        String path;
-        if(isSign==Boolean.TRUE){
-            path = "me/list";
-        }
-        else {
-            path = "nickname";
-        }
-        return UriComponentsBuilder.fromUriString("http://61.97.184.195:80/{path}")
+    public String getUrl(String token){
+        return UriComponentsBuilder.fromUriString("http://61.97.184.195:80/login/oauth2/code/kakao")
                 .queryParam("token", token)
-                .buildAndExpand(path).toUriString();
+                .toUriString();
     }
 
 }
