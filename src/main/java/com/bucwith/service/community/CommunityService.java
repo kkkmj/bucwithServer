@@ -44,9 +44,14 @@ public class CommunityService {
 
     @Transactional(readOnly = true)
     public List<CommuResDto> findCommuAllDesc(Long userId){
-        List<Community> communities = communityRepository.findAllDesc();
-        return communities.stream().map(community -> new CommuResDto(community,
-                getCategory(community),getLike(community, userService.getUser(userId)))).collect(Collectors.toList());
+        return communityRepository.findAllDesc().stream().map(community -> new CommuResDto(community,
+                    getCategory(community),getLike(community, userService.getUser(userId)))).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommuResDto> findCommuByCategoryDesc(Long userId, List<Category> category){
+        return commuCateRepository.findByCategory(category).stream().map(community -> new CommuResDto(community,
+                getCategory(community),getLike(community, userService.getUser(userId)))).sorted(Comparator.comparing(CommuResDto::getRegistDate).reversed()).collect(Collectors.toList());
     }
 
     @Transactional
