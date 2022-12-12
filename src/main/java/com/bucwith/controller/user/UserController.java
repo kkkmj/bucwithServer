@@ -3,6 +3,7 @@ package com.bucwith.controller.user;
 import com.bucwith.common.CommController;
 import com.bucwith.common.config.JwtService;
 import com.bucwith.common.exception.BaseException;
+import com.bucwith.dto.user.UserIconReqDto;
 import com.bucwith.dto.user.UserNameReqDto;
 import com.bucwith.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,20 @@ public class UserController extends CommController {
     @PutMapping("/name")
     public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) throws BaseException {
         Long userId = jwtService.getUserId();
-        userService.updateName(userId, reqDto);
-        return SuccessReturn(reqDto);
+        return SuccessReturn(userService.updateName(userId, reqDto));
 
+    }
+
+    /**
+     * 유저 icon 수정
+     * @param reqDto (iconCode, bgColor)
+     * @return
+     * @throws BaseException
+     */
+    @PutMapping("/icon")
+    public ResponseEntity updateIcon(@Validated @RequestBody UserIconReqDto reqDto) throws BaseException{
+        Long userId = jwtService.getUserId();
+        return SuccessReturn(userService.updateIcon(userId, reqDto));
     }
 
 }

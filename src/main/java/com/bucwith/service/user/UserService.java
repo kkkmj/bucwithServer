@@ -1,6 +1,7 @@
 package com.bucwith.service.user;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
+import com.bucwith.dto.user.UserIconReqDto;
 import com.bucwith.repository.user.UserRepository;
 import com.bucwith.dto.user.UserNameReqDto;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,16 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Long updateName(Long id, UserNameReqDto reqDto) {
-        User user = getUser(id);
+    public Long updateName(Long userId, UserNameReqDto reqDto) {
+        User user = getUser(userId);
         user.updateName(reqDto.getName());
+        return userId;
+    }
 
-        return id;
+    public Long updateIcon(Long userId, UserIconReqDto reqDto){
+        User user = getUser(userId);
+        user.updateIcon(reqDto.getIconCode(), reqDto.getBgColor());
+        return userId;
     }
 
     public User getUser(Long userId){

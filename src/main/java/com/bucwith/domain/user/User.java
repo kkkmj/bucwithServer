@@ -29,8 +29,8 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    private String iconCode;
-    private String bgColor;
+    private String iconCode; //아이콘 코드
+    private String bgColor; //배경컬러
 
     @CreationTimestamp
     private LocalDateTime registDate;
