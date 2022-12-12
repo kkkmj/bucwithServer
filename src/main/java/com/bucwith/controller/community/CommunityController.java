@@ -3,14 +3,18 @@ package com.bucwith.controller.community;
 import com.bucwith.common.CommController;
 import com.bucwith.common.config.JwtService;
 import com.bucwith.common.exception.BaseException;
+import com.bucwith.domain.commuCategory.Category;
 import com.bucwith.dto.community.*;
 import com.bucwith.dto.comment.CommentModifyReqDto;
 import com.bucwith.dto.comment.CommentSaveReqDto;
 import com.bucwith.service.community.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,8 +38,11 @@ public class CommunityController extends CommController {
      * @return (글번호, 유저이름, 내용, 타입, 카테고리 배열, 파티원수, 좋아요 수, 댓글 수, 작성시간, 좋아요 유무)
      */
     @GetMapping()
-    public ResponseEntity findCommuAll() throws BaseException {
+    public ResponseEntity findCommuAll(@RequestParam(required = false) List<Category> category) throws BaseException {
         Long userId=jwtService.getUserId();
+        if(!CollectionUtils.isEmpty(category)){
+            return SuccessReturn(communityService.findCommuByCategoryDesc(userId, category));
+        }
         return SuccessReturn(communityService.findCommuAllDesc(userId));
     }
 
