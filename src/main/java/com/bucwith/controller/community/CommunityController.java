@@ -99,4 +99,10 @@ public class CommunityController extends CommController {
         communityService.commuLike(commuId,userId);
         return SuccessReturn();
     }
+
+    @GetMapping("/my")
+    public ResponseEntity findMyCommunities() throws BaseException{
+        Long userId = jwtService.getUserId();
+        return SuccessReturn(communityService.findMyCommunities(userId));
+    }
 }
