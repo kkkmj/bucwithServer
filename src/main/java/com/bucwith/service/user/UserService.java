@@ -3,6 +3,7 @@ package com.bucwith.service.user;
 import com.bucwith.domain.user.User;
 import com.bucwith.dto.community.CommuResDto;
 import com.bucwith.dto.user.UserIconReqDto;
+import com.bucwith.dto.user.UserInfoResDto;
 import com.bucwith.repository.community.CommunityRepository;
 import com.bucwith.repository.user.UserRepository;
 import com.bucwith.dto.user.UserNameReqDto;
@@ -34,6 +35,12 @@ public class UserService {
         user.updateIcon(reqDto.getIconCode(), reqDto.getBgColor());
         return userId;
     }
+
+    @Transactional(readOnly = true)
+    public UserInfoResDto findUserInfo(Long userId){
+        return new UserInfoResDto(getUser(userId));
+    }
+
 
     public User getUser(Long userId){
         return userRepository.findById(userId)
