@@ -56,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // URL, HTTP 메소드별로 관리가 가능하다. 지정된 URL들은 permitAll() 옵션을 통해 전체 열람 관한을 준다.
                 .antMatchers("/","/test/**", "/login/**").permitAll()
                 .antMatchers("/oauth2/**", "/auth/**").permitAll()
+                .antMatchers("/bucket/**").authenticated()
 
                 // anyRequest
                 // 설정된 값 이외의 나머지 URL들을 나타낸다. authenticated()를 추가하여 나머지 URL들은 모두 인증된 사용자들(로그인한 사용자들)에게만 허용한다.
