@@ -38,14 +38,14 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllAsc(commuId);
         Community community = communityService.getCommu(commuId);
         return comments.stream().map(comment -> new CommentAllResDto(comment,
-                comments.stream()
-                        .filter(c -> c.getParentId().equals(comment.getCommentId()))
+                comments.stream() //대댓글
+                        .filter(reply -> reply.getParentId().equals(comment.getCommentId()))
                         .map(CommentResDto::new)
                         //secret이고, 대댓글 작성자가 아니고, 댓글 작성자가 아니면 비밀댓글
-                        .map(cDto->cDto.getSecret().equals(Boolean.TRUE)&&(!userId.equals(cDto.getUserId())&&!userId.equals(comment.getUser().getUserId()))?cDto.SecretContent():cDto)
+                        .map(replyDto->replyDto.getSecret()&&(!userId.equals(replyDto.getUserId())&&!userId.equals(comment.getUser().getUserId()))?replyDto.SecretContent():replyDto)
                         .collect(Collectors.toList())))
                 //secret이고, 댓글작성자가 아니고, 원글작성자가 아니면 비밀댓글
-                .map(cADto -> cADto.getSecret().equals(Boolean.TRUE)&&(!userId.equals(cADto.getUserId())&&!userId.equals(community.getUser().getUserId()))?cADto.SecretContent():cADto)
+                .map(commentDto -> commentDto.getSecret()&&(!userId.equals(commentDto.getUserId())&&!userId.equals(community.getUser().getUserId()))?commentDto.SecretContent():commentDto)
                 .collect(Collectors.toList());
     }
 
