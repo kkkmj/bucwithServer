@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 
 @Slf4j
@@ -43,7 +44,7 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtService.createJwt(userId, name);
         //OAuthToken token = jwtService.createJwt(user.getUserId(), user.getName());
         log.info("{}", token);
-        String targetUrl = getUrl(token, user.getIsSign());
+        String targetUrl = getUrl(token, user);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -56,11 +57,10 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.getWriter().write(result);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
 
-
     }
 
-    public String getUrl(String token, Boolean isSign){
-        String path = (isSign) ? "me/list" : "nickname";
+    public String getUrl(String token, CustomUserDetail user){
+        String path = Objects.equals(user.getUname(), "N") ? "nickname" : "me/list";
         return UriComponentsBuilder.fromUriString("http://61.97.184.195:80/{path}")
                 .queryParam("token", token)
                 .buildAndExpand(path).toUriString();
