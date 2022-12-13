@@ -10,11 +10,10 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class BucketReqDto {
-    @NotNull private Integer userId;
     @NotBlank private String contents;
     @NotNull private BucketType type;
 
-    public Bucket toEntity() {
+    public Bucket toEntity(long userId) {
         return Bucket.builder()
                 .userId(userId)
                 .contents(contents)

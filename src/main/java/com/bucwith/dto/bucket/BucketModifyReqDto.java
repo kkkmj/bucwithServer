@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class BucketModifyReqDto {
-    @NotNull private Integer bucketId;
+    @NotNull private Long bucketId;
     @NotBlank private String contents;
     @NotNull private BucketType type;
 }

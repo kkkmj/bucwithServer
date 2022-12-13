@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface BucketRepository extends JpaRepository<Bucket, Integer>, JpaSpecificationExecutor<Bucket> {
-    List<Bucket> findByUserId(int userId);
+public interface BucketRepository extends JpaRepository<Bucket, Long>, JpaSpecificationExecutor<Bucket> {
+    List<Bucket> findByUserId(long userId);
 }
 

@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class Bucket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer bucketId;
-    private Integer userId;
+    private Long bucketId;
+    private Long userId;
     private String contents;
     private Boolean isFinished;
 

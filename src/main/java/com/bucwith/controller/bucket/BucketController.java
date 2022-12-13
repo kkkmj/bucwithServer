@@ -2,6 +2,8 @@ package com.bucwith.controller.bucket;
 
 
 import com.bucwith.common.CommController;
+import com.bucwith.common.config.JwtService;
+import com.bucwith.common.exception.BaseException;
 import com.bucwith.dto.bucket.BucketModifyReqDto;
 import com.bucwith.dto.bucket.BucketReqDto;
 import com.bucwith.service.bucket.BucketService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bucket")
 public class BucketController extends CommController {
 
+    private final JwtService jwtService;
     private final BucketService bucketService;
 
     /*
@@ -26,8 +29,9 @@ public class BucketController extends CommController {
      * Response Data : 등록한 Bucket 반환
      */
     @PostMapping
-    public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) {
-        return SuccessReturn(bucketService.register(reqDto));
+    public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) throws BaseException {
+        long userId = jwtService.getUserId();
+        return SuccessReturn(bucketService.register(reqDto.toEntity(userId)));
     }
 
     /*
@@ -35,8 +39,9 @@ public class BucketController extends CommController {
      * Request Data : userId
      * Response Data : userId로 조회한 Bucket 반환
      */
-    @GetMapping("/{userId}")
-    public ResponseEntity select(@PathVariable Integer userId) {
+    @GetMapping
+    public ResponseEntity select() throws BaseException {
+        long userId = jwtService.getUserId();
         return SuccessReturn(bucketService.getBuckets(userId));
     }
 
