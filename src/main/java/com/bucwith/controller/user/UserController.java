@@ -51,10 +51,10 @@ public class UserController extends CommController {
         return SuccessReturn(userService.updateIcon(userId, reqDto));
     }
 
-    @GetMapping("/community")
-    public ResponseEntity findMyCommunities() throws BaseException{
+    @GetMapping("/info")
+    public ResponseEntity findUserInfo() throws BaseException{
         Long userId = jwtService.getUserId();
-        return SuccessReturn(communityService.findMyCommunities(userId));
+        return SuccessReturn(userService.findUserInfo(userId));
     }
 
 }
