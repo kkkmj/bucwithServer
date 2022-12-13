@@ -6,7 +6,6 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-
 public class CommentResDto {
     private Long commentId;
     private Long parentId;
@@ -24,6 +23,10 @@ public class CommentResDto {
         this.content = entity.getContent();
         this.secret = entity.getSecret();
         this.registDate = entity.getRegistDate();
+    }
+    public CommentResDto SecretContent(){
+        this.content = "비밀댓글입니다.";
+        return this;
     }
 
 }

@@ -29,4 +29,10 @@ public class CommentAllResDto {
         this.registDate = entity.getRegistDate();
         this.replys = replys;
     }
+
+    public CommentAllResDto SecretContent(){
+        this.content = "비밀댓글입니다.";
+        return this;
+    }
+
 }

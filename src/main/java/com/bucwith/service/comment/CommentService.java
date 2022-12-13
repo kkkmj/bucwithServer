@@ -1,6 +1,7 @@
 package com.bucwith.service.comment;
 
 import com.bucwith.domain.comment.Comment;
+import com.bucwith.domain.community.Community;
 import com.bucwith.dto.comment.CommentAllResDto;
 import com.bucwith.dto.comment.CommentModifyReqDto;
 import com.bucwith.dto.comment.CommentResDto;
@@ -33,13 +34,19 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentAllResDto> findCommentAllDesc(Long commuId){
+    public List<CommentAllResDto> findCommentAllDesc(Long commuId, Long userId){
         List<Comment> comments = commentRepository.findAllAsc(commuId);
+        Community community = communityService.getCommu(commuId);
         return comments.stream().map(comment -> new CommentAllResDto(comment,
-                comments.stream()
-                        .filter(c -> c.getParentId().equals(comment.getCommentId()))
+                comments.stream() //대댓글
+                        .filter(reply -> reply.getParentId().equals(comment.getCommentId()))
                         .map(CommentResDto::new)
-                        .collect(Collectors.toList()))).collect(Collectors.toList());
+                        //secret이고, 대댓글 작성자가 아니고, 댓글 작성자가 아니면 비밀댓글
+                        .map(replyDto->replyDto.getSecret()&&(!userId.equals(replyDto.getUserId())&&!userId.equals(comment.getUser().getUserId()))?replyDto.SecretContent():replyDto)
+                        .collect(Collectors.toList())))
+                //secret이고, 댓글작성자가 아니고, 원글작성자가 아니면 비밀댓글
+                .map(commentDto -> commentDto.getSecret()&&(!userId.equals(commentDto.getUserId())&&!userId.equals(community.getUser().getUserId()))?commentDto.SecretContent():commentDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -49,9 +56,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId){
+    public Long deleteComment(Long commentId){
         communityRepository.updateMinusComment(getComment(commentId).getCommunity().getCommuId());
-        commentRepository.deleteById(commentId);
+        getComment(commentId).delete();
+        return commentId;
     }
 
     public Comment getComment(Long commentId){

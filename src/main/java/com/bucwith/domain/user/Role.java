@@ -1,4 +1,4 @@
-package com.bucwith.domain.account;
+package com.bucwith.domain.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.bucwith.domain.comment;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import com.bucwith.domain.community.Community;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,5 +49,10 @@ public class Comment {
     public void modify(String content, Boolean secret){
         this.content = content;
         this.secret = secret;
+    }
+
+    public void delete(){
+        this.content = "삭제된 댓글입니다.";
+        this.secret = Boolean.FALSE;
     }
 }

@@ -1,6 +1,6 @@
 package com.bucwith.dto.comment;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import com.bucwith.domain.comment.Comment;
 import com.bucwith.domain.community.Community;
 import lombok.Builder;

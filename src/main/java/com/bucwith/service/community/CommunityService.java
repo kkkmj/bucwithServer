@@ -1,6 +1,6 @@
 package com.bucwith.service.community;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import com.bucwith.domain.commuCategory.Category;
 import com.bucwith.domain.commuCategory.CommuCate;
 import com.bucwith.domain.community.*;
@@ -75,6 +75,12 @@ public class CommunityService {
 
     public Category[] findCategory(){
         return Category.values();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommuResDto> findMyCommunities(Long userId){
+        return communityRepository.findMyCommunities(userId).stream().map(community -> new CommuResDto(community,
+                getCategory(community),getLike(community, userService.getUser(userId)))).collect(Collectors.toList());
     }
 
     @Transactional

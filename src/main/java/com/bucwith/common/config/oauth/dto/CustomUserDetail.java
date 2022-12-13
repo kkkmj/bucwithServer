@@ -1,6 +1,6 @@
 package com.bucwith.common.config.oauth.dto;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

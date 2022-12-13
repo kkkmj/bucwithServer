@@ -1,6 +1,6 @@
 package com.bucwith.domain.community;
 
-import com.bucwith.domain.account.User;
+import com.bucwith.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
