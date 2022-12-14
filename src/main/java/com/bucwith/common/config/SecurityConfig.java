@@ -1,8 +1,6 @@
 package com.bucwith.common.config;
 
-import com.bucwith.common.config.oauth.ConfigSuccessHandler;
-import com.bucwith.common.config.oauth.CustomOAuth2UserService;
-import com.bucwith.common.config.oauth.JwtAuthenticationFilter;
+import com.bucwith.common.config.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
