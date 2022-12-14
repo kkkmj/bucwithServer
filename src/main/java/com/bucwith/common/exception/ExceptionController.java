@@ -62,4 +62,9 @@ public class ExceptionController extends CommController {
         return ErrorReturn(ApiCode.PARAM_ERROR);
     }
 
+    @ExceptionHandler
+    public ResponseEntity jwtException(BaseException e){
+        return ErrorReturn(e.getStatus());
+    }
+
 }
