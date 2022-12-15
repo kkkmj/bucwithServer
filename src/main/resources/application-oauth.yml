@@ -6,12 +6,18 @@ spring:
           google:
             client-id: 393567589007-3achadgo08t7hlnv87q6r38t2toicbot.apps.googleusercontent.com
             #client-secret: 구글 어차피 안쓰니 지워도 상관은..
-            redirect-uri: http://localhost:8888/login/oauth2/code/google
+            #local
+#           redirect-uri: http://localhost:8888/login/oauth2/code/google
+            #dev
+            redirect-uri: http://61.97.184.195:8080/login/oauth2/code/google
             scope: profile, email
           kakao:
             client-id: eccc1040c574c780c7771014ebb77263
             #client-secret: 노션참고
-            redirect-uri: http://localhost:8888/login/oauth2/code/kakao
+            #local
+#           redirect-uri: http://localhost:8888/login/oauth2/code/kakao
+            #dev
+            redirect-uri: http://61.97.184.195:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
               - profile_nickname

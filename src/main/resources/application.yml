@@ -7,7 +7,8 @@ spring:
     driverClassName: org.mariadb.jdbc.Driver
   profiles:
     include: oauth
-#    hikari:
+    hikari:
+      maxLifetime: 900000
 #      connectionTimeout: 10000 #30000ms
 #      maximumPoolSize: 20 #?? 10
 #      validationTimeout: 1000 #5000ms, connectionTimeout ?? ??? ?
