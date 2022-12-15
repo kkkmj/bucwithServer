@@ -61,7 +61,7 @@ public class ConfigSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     public String getUrl(String token, CustomUserDetail user){
         String path = Objects.equals(user.getUname(), "N") ? "nickname" : "me/list";
-        return UriComponentsBuilder.fromUriString("http://61.97.184.195/{path}")
+        return UriComponentsBuilder.fromUriString("http://localhost:3000/{path}")
                 .queryParam("token", token)
                 .buildAndExpand(path).toUriString();
     }
