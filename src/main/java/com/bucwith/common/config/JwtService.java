@@ -1,6 +1,7 @@
 package com.bucwith.common.config;
 
 import com.bucwith.common.config.oauth.dto.CustomUserDetail;
+import com.bucwith.common.config.oauth.dto.OAuthToken;
 import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
 import io.jsonwebtoken.Claims;
@@ -41,15 +42,24 @@ public class JwtService {
         @param userId, role
         @return String
          **/
-    public String createJwt(Long userId, String name){
-        return Jwts.builder()
+    public OAuthToken createJwt(Long userId, String name){
+        return new OAuthToken(
+                Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .claim("userId",userId)
                 .claim("name", name)
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-                .compact();
+                .compact(),
+                Jwts.builder()
+                        .setHeaderParam("type","jwt")
+                        .claim("userId",userId)
+                        .claim("name", name)
+                        .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                        .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 60 * 24 * 14)))  //2주
+                        .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                        .compact());
     }
 
     /**
@@ -129,6 +139,16 @@ public class JwtService {
     public String getUserName(String token){
         return Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
                 .parseClaimsJws(token).getBody().get("name", String.class);
+    }
+
+    public Long getExpiration(String accessToken){
+        Date expiration = Jwts.parser()
+                .setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(accessToken).getBody().getExpiration();
+
+        Long now = new Date().getTime();
+
+        return expiration.getTime()-now;
     }
 
 
