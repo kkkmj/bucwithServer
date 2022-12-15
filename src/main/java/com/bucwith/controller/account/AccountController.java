@@ -18,7 +18,7 @@ import java.util.Map;
 import static com.bucwith.common.config.oauth.secret.Secret.AUTHORIZATION;
 import static com.bucwith.common.config.oauth.secret.Secret.BEARER;
 
-@RequestMapping("/test")
+@RequestMapping("/account")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
