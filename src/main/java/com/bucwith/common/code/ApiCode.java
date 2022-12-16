@@ -17,9 +17,13 @@ public enum ApiCode {
 
     // ------------------------FUNCTION----------------------------
     
-    UNKNOWN_ERROR(1000, "알수 없는 오류");
-
-
+    UNKNOWN_ERROR(1000, "알수 없는 오류"),
+    EXPIRED_REFRESH_TOKEN(1003, "만료된 refresh 토큰입니다. 다시 로그인해주세요."),
+    WRONG_TYPE_TOKEN(1004, "변조된 토큰입니다."),
+    EXPIRED_TOKEN(1005, "만료된 토큰입니다."),
+    UNSUPPORTED_TOKEN(1006, "변조된 토큰입니다."),
+    ACCESS_DENIED(1007, "권한이 없습니다."),
+    WRONG_TOKEN(1008, "잘못된 토큰입니다.");
 
 
     private int code;

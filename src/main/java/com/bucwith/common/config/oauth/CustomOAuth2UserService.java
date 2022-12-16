@@ -61,7 +61,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 다른 소셜 로그인도 이 클래스를 사용한다.
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        log.info("{}", attributes);
         Optional<User> isUser = userRepository.findByEmail(attributes.getEmail());
         Boolean isSign;
         User user;

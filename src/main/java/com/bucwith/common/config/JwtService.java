@@ -4,10 +4,8 @@ import com.bucwith.common.config.oauth.dto.CustomUserDetail;
 import com.bucwith.common.config.oauth.dto.OAuthToken;
 import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +19,7 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 
-import static com.bucwith.common.code.ApiCode.EMPTY_JWT;
-import static com.bucwith.common.code.ApiCode.INVALID_JWT;
+import static com.bucwith.common.code.ApiCode.*;
 import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
 
 
@@ -32,6 +29,7 @@ import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
  * jwt토큰 생성, 얻기, 인증, 검증, 토큰에서 userId 추출
  *
  */
+@Slf4j
 @Service
 public class JwtService {
 
@@ -99,12 +97,8 @@ public class JwtService {
      * @return
      */
     public boolean validateToken(String jwtToken) {
-        try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
@@ -112,23 +106,15 @@ public class JwtService {
     @return int
     @throws BaseException
      */
-    public Long getUserId() throws BaseException{
+    public Long getUserId(){
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
-            throw new BaseException(EMPTY_JWT);
-        }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
-            claims = Jwts.parser()
-                    .setSigningKey(Secret.JWT_SECRET_KEY)
-                    .parseClaimsJws(accessToken);
-        } catch (Exception ignored) {
-            throw new BaseException(INVALID_JWT);
-        }
-
+        claims = Jwts.parser()
+                .setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(accessToken);
         // 3. userIdx 추출
         return claims.getBody().get("userId", Long.class);  // jwt 에서 userId를 추출합니다.
     }
