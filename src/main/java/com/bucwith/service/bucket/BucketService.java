@@ -51,7 +51,7 @@ public class BucketService {
     public BucketResDto getBucketResDto(long bucketId) {
         Bucket bucket = getBucket(bucketId);
         User user =  userService.getUser(bucket.getUserId());
-        return new BucketResDto(user, bucket);
+        return new BucketResDto(user.getName(), bucket);
     }
 
     // Buckets 조회 - 달성한 리스트는 하단 > 등록날짜 최신 순 정렬

@@ -9,6 +9,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class BucketResDto {
-    private User user;
+    private String userName;
     private Bucket bucket;
 }
