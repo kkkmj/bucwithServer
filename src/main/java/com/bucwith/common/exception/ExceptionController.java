@@ -3,12 +3,14 @@ package com.bucwith.common.exception;
 
 import com.bucwith.common.CommController;
 import com.bucwith.common.code.ApiCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
@@ -60,11 +62,6 @@ public class ExceptionController extends CommController {
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity methodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         return ErrorReturn(ApiCode.PARAM_ERROR);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity jwtException(BaseException e){
-        return ErrorReturn(e.getStatus());
     }
 
 }

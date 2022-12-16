@@ -33,7 +33,7 @@ public class UserController extends CommController {
      * @throws BaseException
      */
     @PutMapping("/name")
-    public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) throws BaseException {
+    public ResponseEntity updateName(@Validated @RequestBody UserNameReqDto reqDto ) {
         Long userId = jwtService.getUserId();
         return SuccessReturn(userService.updateName(userId, reqDto));
 
@@ -46,13 +46,13 @@ public class UserController extends CommController {
      * @throws BaseException
      */
     @PutMapping("/icon")
-    public ResponseEntity updateIcon(@Validated @RequestBody UserIconReqDto reqDto) throws BaseException{
+    public ResponseEntity updateIcon(@Validated @RequestBody UserIconReqDto reqDto){
         Long userId = jwtService.getUserId();
         return SuccessReturn(userService.updateIcon(userId, reqDto));
     }
 
     @GetMapping("/info")
-    public ResponseEntity findUserInfo() throws BaseException{
+    public ResponseEntity findUserInfo(){
         Long userId = jwtService.getUserId();
         return SuccessReturn(userService.findUserInfo(userId));
     }
