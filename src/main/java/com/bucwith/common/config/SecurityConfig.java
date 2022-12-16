@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // URL, HTTP 메소드별로 관리가 가능하다. 지정된 URL들은 permitAll() 옵션을 통해 전체 열람 관한을 준다.
                 .antMatchers("/","/test/**", "/login/**").permitAll()
                 .antMatchers("/oauth2/**", "/auth/**").permitAll()
+                .antMatchers("/bucket/id/**").permitAll() // bucketId 조회는 토큰 없이 가능해야 함.
                 .antMatchers("/bucket/**").authenticated()
 
                 // anyRequest
