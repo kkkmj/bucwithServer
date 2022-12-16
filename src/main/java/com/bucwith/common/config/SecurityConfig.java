@@ -3,12 +3,16 @@ package com.bucwith.common.config;
 import com.bucwith.common.config.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     @Autowired
     private final ConfigSuccessHandler successHandler;
+    @Autowired
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+
 
 
     /** Spring Security
@@ -32,15 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * jwt 토큰을 받아 필터 수행
      *
      * OAuth2 로그인 성공시 CustomOAuth2Service로 이동
-
      **/
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http
+                // rest api 이므로 기본설정 사용안함. 기본설정은 비인증시 로그인폼 화면으로 리다이렉트 된다.
+                .httpBasic().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 //csrf 공격을 막아주는 옵션을 disalbe, rest api같은 경우에는 브라우저를 통해 request 받지 않기 때문에 해당 옵션을 꺼도 됨
                 .csrf().disable()
-                .headers().frameOptions().disable()
-                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 스프링 시큐리티가 세션 쿠키 방식으로 동작하지 않도록 설정
                 .and()
@@ -52,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // antMatchers
                 // 권한 관리 대상을 지정하는 옵션이다.
                 // URL, HTTP 메소드별로 관리가 가능하다. 지정된 URL들은 permitAll() 옵션을 통해 전체 열람 관한을 준다.
-                .antMatchers("/","/test/**", "/login/**").permitAll()
+                .antMatchers("/","/account/**", "/login/**").permitAll()
                 .antMatchers("/oauth2/**", "/auth/**").permitAll()
                 .antMatchers("/bucket/id/**").permitAll() // bucketId 조회는 토큰 없이 가능해야 함.
                 .antMatchers("/bucket/**").authenticated()
@@ -87,10 +95,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //성공시 토큰반환해주는 handler
                 .successHandler(successHandler);
-                //.failureHandler(configFailureHandler())
+        //.failureHandler(configFailureHandler())
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtExceptionFilter(jwtService), JwtAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint);
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 

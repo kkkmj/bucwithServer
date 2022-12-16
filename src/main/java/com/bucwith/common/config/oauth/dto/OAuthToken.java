@@ -9,11 +9,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 public class OAuthToken {
-    private String token;
+    private String accessToken;
     private String refreshToken;
 
-    public OAuthToken(String token, String refreshToken) {
-        this.token = token;
+    public OAuthToken(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }

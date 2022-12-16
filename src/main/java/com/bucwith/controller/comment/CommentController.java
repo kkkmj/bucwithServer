@@ -26,7 +26,7 @@ public class CommentController extends CommController {
      * @return 작성된 댓글 id
      */
     @PostMapping()
-    public ResponseEntity commentSave(@Validated @RequestBody CommentSaveReqDto reqDto) throws BaseException {
+    public ResponseEntity commentSave(@Validated @RequestBody CommentSaveReqDto reqDto) {
         return SuccessReturn(commentService.commentSave(reqDto));
     }
 
@@ -36,7 +36,7 @@ public class CommentController extends CommController {
      * @return (댓글 번호, 글번호, 댓글 번호, 유저이름, 내용, 비밀여부, 등록날짜)
      */
     @GetMapping("/{commuId}")
-    public ResponseEntity findCommentAll(@PathVariable Long commuId) throws BaseException {
+    public ResponseEntity findCommentAll(@PathVariable Long commuId) {
         Long userId = jwtService.getUserId();
         return SuccessReturn(commentService.findCommentAllDesc(commuId, userId));
     }

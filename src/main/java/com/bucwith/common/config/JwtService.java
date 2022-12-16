@@ -1,12 +1,11 @@
 package com.bucwith.common.config;
 
 import com.bucwith.common.config.oauth.dto.CustomUserDetail;
+import com.bucwith.common.config.oauth.dto.OAuthToken;
 import com.bucwith.common.config.oauth.secret.Secret;
 import com.bucwith.common.exception.BaseException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,8 +19,7 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 
-import static com.bucwith.common.code.ApiCode.EMPTY_JWT;
-import static com.bucwith.common.code.ApiCode.INVALID_JWT;
+import static com.bucwith.common.code.ApiCode.*;
 import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
 
 
@@ -31,6 +29,7 @@ import static com.bucwith.common.config.oauth.secret.Secret.JWT_SECRET_KEY;
  * jwt토큰 생성, 얻기, 인증, 검증, 토큰에서 userId 추출
  *
  */
+@Slf4j
 @Service
 public class JwtService {
 
@@ -41,15 +40,24 @@ public class JwtService {
         @param userId, role
         @return String
          **/
-    public String createJwt(Long userId, String name){
-        return Jwts.builder()
+    public OAuthToken createJwt(Long userId, String name){
+        return new OAuthToken(
+                Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .claim("userId",userId)
                 .claim("name", name)
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
+                .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 10)))  //둘다 date를 파라미터로 받기 때문에 그냥 안바꿈
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-                .compact();
+                .compact(),
+                Jwts.builder()
+                        .setHeaderParam("type","jwt")
+                        .claim("userId",userId)
+                        .claim("name", name)
+                        .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toInstant()))
+                        .setExpiration(new Date(System.currentTimeMillis()+ (1000 * 60 * 60 * 24 * 14)))  //2주
+                        .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+                        .compact());
     }
 
     /**
@@ -89,12 +97,8 @@ public class JwtService {
      * @return
      */
     public boolean validateToken(String jwtToken) {
-        try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**
@@ -102,23 +106,15 @@ public class JwtService {
     @return int
     @throws BaseException
      */
-    public Long getUserId() throws BaseException{
+    public Long getUserId(){
         //1. JWT 추출
         String accessToken = getJwt();
-        if(accessToken == null || accessToken.length() == 0){
-            throw new BaseException(EMPTY_JWT);
-        }
 
         // 2. JWT parsing
         Jws<Claims> claims;
-        try{
-            claims = Jwts.parser()
-                    .setSigningKey(Secret.JWT_SECRET_KEY)
-                    .parseClaimsJws(accessToken);
-        } catch (Exception ignored) {
-            throw new BaseException(INVALID_JWT);
-        }
-
+        claims = Jwts.parser()
+                .setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(accessToken);
         // 3. userIdx 추출
         return claims.getBody().get("userId", Long.class);  // jwt 에서 userId를 추출합니다.
     }
@@ -129,6 +125,16 @@ public class JwtService {
     public String getUserName(String token){
         return Jwts.parser().setSigningKey(Secret.JWT_SECRET_KEY)
                 .parseClaimsJws(token).getBody().get("name", String.class);
+    }
+
+    public Long getExpiration(String accessToken){
+        Date expiration = Jwts.parser()
+                .setSigningKey(Secret.JWT_SECRET_KEY)
+                .parseClaimsJws(accessToken).getBody().getExpiration();
+
+        Long now = new Date().getTime();
+
+        return expiration.getTime()-now;
     }
 
 

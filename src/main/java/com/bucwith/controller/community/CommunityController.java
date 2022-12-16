@@ -29,7 +29,7 @@ public class CommunityController extends CommController {
      * @return 등록한 글의 번호 반환
      */
     @PostMapping()
-    public ResponseEntity commuSave(@Validated @RequestBody CommuSaveReqDto reqDto) throws BaseException {
+    public ResponseEntity commuSave(@Validated @RequestBody CommuSaveReqDto reqDto) {
         return SuccessReturn(communityService.commuSave(reqDto));
     }
 
@@ -38,7 +38,7 @@ public class CommunityController extends CommController {
      * @return (글번호, 유저이름, 내용, 타입, 카테고리 배열, 파티원수, 좋아요 수, 댓글 수, 작성시간, 좋아요 유무)
      */
     @GetMapping()
-    public ResponseEntity findCommuAll(@RequestParam(required = false) List<Category> category) throws BaseException {
+    public ResponseEntity findCommuAll(@RequestParam(required = false) List<Category> category) {
         Long userId=jwtService.getUserId();
         if(!CollectionUtils.isEmpty(category)){
             return SuccessReturn(communityService.findCommuByCategoryDesc(userId, category));
@@ -53,7 +53,7 @@ public class CommunityController extends CommController {
      * @return (글번호, 유저이름, 내용, 타입, 카테고리 배열, 파티원수, 좋아요 수, 댓글 수, 작성시간, 좋아요 유무)
      */
     @GetMapping("/{commuId}")
-    public ResponseEntity findCommuById(@PathVariable Long commuId) throws BaseException {
+    public ResponseEntity findCommuById(@PathVariable Long commuId) {
         Long userId=jwtService.getUserId();
         communityService.updateView(commuId);
         return SuccessReturn(communityService.findCommuById(userId, commuId));
@@ -94,14 +94,14 @@ public class CommunityController extends CommController {
      * @throws BaseException
      */
     @PostMapping("/{commuId}/like")
-    public ResponseEntity commuLike(@PathVariable Long commuId) throws BaseException {
+    public ResponseEntity commuLike(@PathVariable Long commuId) {
         Long userId=jwtService.getUserId();
         communityService.commuLike(commuId,userId);
         return SuccessReturn();
     }
 
     @GetMapping("/my")
-    public ResponseEntity findMyCommunities() throws BaseException{
+    public ResponseEntity findMyCommunities(){
         Long userId = jwtService.getUserId();
         return SuccessReturn(communityService.findMyCommunities(userId));
     }
