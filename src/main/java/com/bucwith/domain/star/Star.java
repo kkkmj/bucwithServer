@@ -20,11 +20,8 @@ public class Star {
     private Integer bucketId;
     private String contents;
     private String nickname;
-    private String iconCode;
-
-//    @OneToOne
-//    @JoinColumn(name="iconCode")
-//    private Icon icon;
+    @Enumerated(EnumType.STRING)
+    private IconCode iconCode;
 
     @CreationTimestamp
     private LocalDateTime registDate;
