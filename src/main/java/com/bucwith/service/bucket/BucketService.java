@@ -2,8 +2,11 @@ package com.bucwith.service.bucket;
 
 
 import com.bucwith.domain.bucket.Bucket;
+import com.bucwith.domain.user.User;
 import com.bucwith.dto.bucket.BucketModifyReqDto;
+import com.bucwith.dto.bucket.BucketResDto;
 import com.bucwith.repository.bucket.BucketRepository;
+import com.bucwith.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BucketService {
 
+    private final UserService userService;
     private final BucketRepository bucketRepository;
 
     public Bucket register(Bucket bucket) {
@@ -42,6 +46,12 @@ public class BucketService {
     public Bucket getBucket(long bucketId) {
         return bucketRepository.findById(bucketId)
                 .orElseThrow(() -> new NullPointerException("해당 Bucket이 없습니다. bucketId=" + bucketId));
+    }
+
+    public BucketResDto getBucketResDto(long bucketId) {
+        Bucket bucket = getBucket(bucketId);
+        User user =  userService.getUser(bucket.getUserId());
+        return new BucketResDto(user, bucket);
     }
 
     // Buckets 조회 - 달성한 리스트는 하단 > 등록날짜 최신 순 정렬
