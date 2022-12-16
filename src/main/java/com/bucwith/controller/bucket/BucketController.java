@@ -29,7 +29,7 @@ public class BucketController extends CommController {
      * Response Data : 등록한 Bucket 반환
      */
     @PostMapping
-    public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) throws BaseException {
+    public ResponseEntity register(@Validated @RequestBody BucketReqDto reqDto) {
         long userId = jwtService.getUserId();
         return SuccessReturn(bucketService.register(reqDto.toEntity(userId)));
     }
@@ -41,7 +41,7 @@ public class BucketController extends CommController {
      * Response Data : userId로 조회한 Bucket 반환
      */
     @GetMapping("/user")
-    public ResponseEntity selectByUser() throws BaseException {
+    public ResponseEntity selectByUser() {
         long userId = jwtService.getUserId();
         return SuccessReturn(bucketService.getBuckets(userId));
     }
@@ -53,7 +53,7 @@ public class BucketController extends CommController {
      * Response Data : bucketId 조회한 Bucket 반환 (작성자 객체도 같이 반환)
      */
     @GetMapping("/id/{bucketId}")
-    public ResponseEntity selectByBucketId(@PathVariable long bucketId) throws BaseException {
+    public ResponseEntity selectByBucketId(@PathVariable long bucketId)  {
         return SuccessReturn(bucketService.getBucketResDto(bucketId));
     }
 
