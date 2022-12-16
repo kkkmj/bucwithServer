@@ -28,8 +28,8 @@ public class AccountController extends CommController {
     private final AccountService accountService;
 
     @PostMapping("/reissue")
-    public ResponseEntity reissueToken(@Validated @RequestBody OAuthToken oAuthToken) throws BaseException {
-        return SuccessReturn(accountService.reissueToken(oAuthToken));
+    public ResponseEntity reissueToken(@Validated @RequestBody Map<String,String> refreshToken) throws BaseException {
+        return SuccessReturn(accountService.reissueToken(refreshToken.get("refreshToken")));
     }
 
     @GetMapping("/token/{userId}")

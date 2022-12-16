@@ -21,24 +21,22 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class AccountService {
     private final JwtService jwtService;
-    private final UserService userService;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public OAuthToken reissueToken(OAuthToken oAuthToken) throws BaseException {
-        if(!jwtService.validateToken(oAuthToken.getRefreshToken())){
-            throw new BaseException(ApiCode.INVALID_JWT);
+    public OAuthToken reissueToken(String refreshToken) throws BaseException {
+        if(!jwtService.validateToken(refreshToken)){
+            throw new BaseException(ApiCode.EXPIRED_REFRESH_TOKEN);
         }
-        String accessToken = oAuthToken.getAccessToken();
-        Authentication authentication = jwtService.getAuthentication(accessToken);
+        //String accessToken = oAuthToken.getAccessToken();
+        Authentication authentication = jwtService.getAuthentication(refreshToken);
         CustomUserDetail authenticationUser = (CustomUserDetail) authentication.getPrincipal();
-        User user = userService.getUser(jwtService.getUserId(accessToken));
-        String refreshToken = redisTemplate.opsForValue().get("RefreshToken:" +authenticationUser.getUserId());
-        if(!refreshToken.equals(oAuthToken.getRefreshToken())){
+        String redisToken = redisTemplate.opsForValue().get("RefreshToken:" +authenticationUser.getUserId());
+        if(!redisToken.equals(refreshToken)){
             throw new BaseException(ApiCode.INVALID_JWT);
         }
 
-        OAuthToken newToken = jwtService.createJwt(user.getUserId(), user.getName());
+        OAuthToken newToken = jwtService.createJwt(authenticationUser.getUserId(), authenticationUser.getUname());
 
         redisTemplate.opsForValue().set("RefreshToken:" + authenticationUser.getUserId(), newToken.getRefreshToken(),jwtService.getExpiration(newToken.getRefreshToken()), TimeUnit.MILLISECONDS);
         return newToken;
