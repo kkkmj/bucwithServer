@@ -53,7 +53,7 @@ public class BucketController extends CommController {
      * Response Data : bucketId 조회한 Bucket 반환 (작성자 객체도 같이 반환)
      */
     @GetMapping("/id/{bucketId}")
-    public ResponseEntity selectByBucketId(@PathVariable long bucketId) {
+    public ResponseEntity selectByBucketId(@PathVariable long bucketId)  {
         return SuccessReturn(bucketService.getBucketResDto(bucketId));
     }
 
