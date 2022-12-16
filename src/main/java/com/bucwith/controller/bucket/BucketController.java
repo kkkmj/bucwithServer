@@ -36,13 +36,25 @@ public class BucketController extends CommController {
 
     /*
      * Bucket 조회
-     * Request Data : userId
+     * - Use Token
+     * Request Data : null
      * Response Data : userId로 조회한 Bucket 반환
      */
-    @GetMapping
-    public ResponseEntity select() throws BaseException {
+    @GetMapping("/user")
+    public ResponseEntity selectByUser() throws BaseException {
         long userId = jwtService.getUserId();
         return SuccessReturn(bucketService.getBuckets(userId));
+    }
+
+    /*
+     * Bucket 조회
+     * Don't Use Token
+     * Request Data : bucketId
+     * Response Data : bucketId 조회한 Bucket 반환 (작성자 객체도 같이 반환)
+     */
+    @GetMapping("/id/{bucketId}")
+    public ResponseEntity selectByBucketId(@PathVariable long bucketId) throws BaseException {
+        return SuccessReturn(bucketService.getBucketResDto(bucketId));
     }
 
     /*
