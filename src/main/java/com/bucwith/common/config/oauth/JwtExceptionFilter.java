@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.methods.HttpRequestWrapper;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -26,8 +27,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        response.setCharacterEncoding("utf-8");
-
         try{
             filterChain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
@@ -57,8 +56,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             log.error("================================================");
             request.setAttribute("exception", UNKNOWN_ERROR.getCode());
         }
-        filterChain.doFilter(request, response);
-
 
     }
 }
