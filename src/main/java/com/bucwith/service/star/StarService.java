@@ -6,10 +6,12 @@ import com.bucwith.dto.star.StarReqDto;
 import com.bucwith.repository.star.StarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 
 @Slf4j
@@ -33,7 +35,8 @@ public class StarService {
                 .orElseThrow(() -> new NullPointerException("해당 Star가 없습니다. starId=" + starId));
     }
 
-    public List<Star> getStarByBucketId(int bucketId) {
-        return starRepository.findByBucketId(bucketId);
+    public Slice<Star> getStarByBucketId(int bucketId, int currentPage, int pageSize, boolean isDesc) {
+        return starRepository.findByBucketId(bucketId, PageRequest.of(currentPage, pageSize,
+                        (isDesc) ? Sort.by("registDate").descending() : Sort.by("registDate")));
     }
 }
