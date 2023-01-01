@@ -38,9 +38,9 @@ public class StarController extends CommController {
     @GetMapping
     public ResponseEntity select(@RequestParam Integer bucketId,
                                  @RequestParam Integer currentPage,
-                                 @RequestParam Integer pageSize,
+                                 @RequestParam Integer starCnt,
                                  @RequestParam Boolean isDesc) {
-        return SuccessReturn(starService.getStarByBucketId(bucketId, currentPage, pageSize, isDesc));
+        return SuccessReturn(starService.getStarByBucketId(bucketId, currentPage, starCnt, isDesc));
     }
 
     /*

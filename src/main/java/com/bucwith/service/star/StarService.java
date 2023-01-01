@@ -35,8 +35,8 @@ public class StarService {
                 .orElseThrow(() -> new NullPointerException("해당 Star가 없습니다. starId=" + starId));
     }
 
-    public Slice<Star> getStarByBucketId(int bucketId, int currentPage, int pageSize, boolean isDesc) {
-        return starRepository.findByBucketId(bucketId, PageRequest.of(currentPage, pageSize,
+    public Slice<Star> getStarByBucketId(int bucketId, int currentPage, int starCnt, boolean isDesc) {
+        return starRepository.findByBucketId(bucketId, PageRequest.of(currentPage, starCnt,
                         (isDesc) ? Sort.by("registDate").descending() : Sort.by("registDate")));
     }
 }
