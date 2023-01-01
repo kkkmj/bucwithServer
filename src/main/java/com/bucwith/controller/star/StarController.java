@@ -35,9 +35,12 @@ public class StarController extends CommController {
      * iconCode -> Icon 조회 및 반환 필요.
      * Response Data : bucketId로 조회한 List<Star> 반환
      */
-    @GetMapping("/{bucketId}")
-    public ResponseEntity select(@PathVariable Integer bucketId) {
-        return SuccessReturn(starService.getStarByBucketId(bucketId));
+    @GetMapping
+    public ResponseEntity select(@RequestParam Integer bucketId,
+                                 @RequestParam Integer currentPage,
+                                 @RequestParam Integer pageSize,
+                                 @RequestParam Boolean isDesc) {
+        return SuccessReturn(starService.getStarByBucketId(bucketId, currentPage, pageSize, isDesc));
     }
 
     /*
