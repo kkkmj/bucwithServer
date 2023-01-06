@@ -10,5 +10,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface StarRepository extends JpaRepository<Star, Integer>, JpaSpecificationExecutor<Star> {
     Slice<Star> findByBucketId(int bucketId, Pageable pageable);
+    int countByBucketId(int bucketId);
 }
 

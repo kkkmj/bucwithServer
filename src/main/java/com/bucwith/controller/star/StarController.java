@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @Slf4j
 @RestController
@@ -40,7 +42,10 @@ public class StarController extends CommController {
                                  @RequestParam Integer currentPage,
                                  @RequestParam Integer starCnt,
                                  @RequestParam Boolean isDesc) {
-        return SuccessReturn(starService.getStarByBucketId(bucketId, currentPage, starCnt, isDesc));
+        return SuccessReturn(Map.of(
+                "stars", starService.getStarByBucketId(bucketId, currentPage, starCnt, isDesc),
+                "totalCnt", starService.countStarByBucketId(bucketId))
+        );
     }
 
     /*
