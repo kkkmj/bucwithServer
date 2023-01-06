@@ -3,6 +3,7 @@ package com.bucwith.controller.star;
 
 import com.bucwith.common.CommController;
 import com.bucwith.dto.star.StarReqDto;
+import com.bucwith.dto.star.StarResDto;
 import com.bucwith.service.star.StarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,17 +36,16 @@ public class StarController extends CommController {
      * Star(응원별) 조회
      * Request Data : bucketId
      * iconCode -> Icon 조회 및 반환 필요.
-     * Response Data : bucketId로 조회한 List<Star> 반환
+     * Response Data : StarResDto 반환 (totalCnt, stars)
      */
     @GetMapping
     public ResponseEntity select(@RequestParam Integer bucketId,
                                  @RequestParam Integer currentPage,
                                  @RequestParam Integer starCnt,
                                  @RequestParam Boolean isDesc) {
-        return SuccessReturn(Map.of(
-                "stars", starService.getStarByBucketId(bucketId, currentPage, starCnt, isDesc),
-                "totalCnt", starService.countStarByBucketId(bucketId))
-        );
+        return SuccessReturn(new StarResDto(
+                starService.countStarByBucketId(bucketId), // totalCnt
+                starService.getStarByBucketId(bucketId, currentPage, starCnt, isDesc))); // stars
     }
 
     /*
