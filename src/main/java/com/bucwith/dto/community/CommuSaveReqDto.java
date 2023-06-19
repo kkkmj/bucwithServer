@@ -4,6 +4,7 @@ import com.bucwith.domain.user.User;
 import com.bucwith.domain.commuCategory.Category;
 import com.bucwith.domain.community.CommuType;
 import com.bucwith.domain.community.Community;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CommuSaveReqDto {
 
     private Long userId;
@@ -21,16 +24,6 @@ public class CommuSaveReqDto {
     private CommuType type;
     private List<Category> category;
     private int party;
-
-    @Builder
-    public CommuSaveReqDto(Long userId, String content, CommuType type, List<Category> category, int party){
-        this.userId = userId;
-        this.content = content;
-        this.type = type;
-        this.category = category;
-        this.party = party;
-    }
-
 
     public Community toEntity(User user){
         return Community.builder()
